@@ -1,0 +1,1 @@
+/Users/simonvergauwen/Projects/rewrite-arrow/build/classes/java/main/arrow/SayHelloRecipe$SayHelloVisitor.class:/Users/simonvergauwen/Projects/rewrite-arrow/build/classes/java/main/arrow/SayHelloRecipe.class
