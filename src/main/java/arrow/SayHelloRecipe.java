@@ -5,18 +5,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.Value;
-import org.jetbrains.annotations.NotNull;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.Option;
 import org.openrewrite.Recipe;
 import org.openrewrite.TreeVisitor;
-import org.openrewrite.java.JavaIsoVisitor;
 import org.openrewrite.java.JavaTemplate;
 import org.openrewrite.java.tree.J;
 import org.openrewrite.kotlin.KotlinIsoVisitor;
 
 @Value
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 public class SayHelloRecipe extends Recipe {
     @Option(displayName = "Fully qualified class name",
             description = "A fully qualified class name indicating which class to add a `hello()` method to.",
@@ -44,9 +42,9 @@ public class SayHelloRecipe extends Recipe {
         return new SayHelloVisitor();
     }
 
-    public class SayHelloVisitor extends JavaIsoVisitor<ExecutionContext> {
+    public class SayHelloVisitor extends KotlinIsoVisitor<ExecutionContext> {
         private final JavaTemplate helloTemplate =
-                JavaTemplate.builder(this::getCursor, "public String hello() { return \"Hello from #{}!\"; }")
+                JavaTemplate.builder(this::getCursor, "public fun hello(): String { return \"Hello from #{}!\"; }")
                         .build();
 
         @Override
@@ -69,13 +67,17 @@ public class SayHelloRecipe extends Recipe {
                 return classDecl;
             }
 
+            final J.Block block = classDecl.getBody();
+
             // Interpolate the fullyQualifiedClassName into the template and use the resulting LST to update the class body
             classDecl = classDecl.withBody(
-                    classDecl.getBody().withTemplate(
-                            helloTemplate,
-                            classDecl.getBody().getCoordinates().lastStatement(),
-                            fullyQualifiedClassName
-                    ));
+                    classDecl
+                            .getBody()
+                            .withTemplate(
+                                    helloTemplate,
+                                    classDecl.getBody().getCoordinates().lastStatement(),
+                                    fullyQualifiedClassName
+                            ));
 
             return classDecl;
         }

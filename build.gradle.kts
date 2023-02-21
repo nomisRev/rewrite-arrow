@@ -35,7 +35,6 @@ dependencies {
 
     implementation("org.openrewrite:rewrite-kotlin:0.2.0")
 
-
     testImplementation("org.openrewrite:rewrite-test")
     testImplementation("org.openrewrite.recipe:rewrite-testing-frameworks")
     testImplementation("org.junit.jupiter:junit-jupiter-api:latest.release")
