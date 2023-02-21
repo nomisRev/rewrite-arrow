@@ -9,6 +9,7 @@ import org.openrewrite.ExecutionContext;
 import org.openrewrite.Option;
 import org.openrewrite.Recipe;
 import org.openrewrite.TreeVisitor;
+import org.openrewrite.java.JavaIsoVisitor;
 import org.openrewrite.java.JavaTemplate;
 import org.openrewrite.java.tree.J;
 import org.openrewrite.kotlin.KotlinIsoVisitor;
@@ -42,7 +43,7 @@ public class SayHelloRecipe extends Recipe {
         return new SayHelloVisitor();
     }
 
-    public class SayHelloVisitor extends KotlinIsoVisitor<ExecutionContext> {
+    public class SayHelloVisitor extends JavaIsoVisitor<ExecutionContext> {
         private final JavaTemplate helloTemplate =
                 JavaTemplate.builder(this::getCursor, "public fun hello(): String { return \"Hello from #{}!\" }")
                         .build();
@@ -69,13 +70,11 @@ public class SayHelloRecipe extends Recipe {
 
             // Interpolate the fullyQualifiedClassName into the template and use the resulting LST to update the class body
             classDecl = classDecl.withBody(
-                    classDecl
-                            .getBody()
-                            .withTemplate(
-                                    helloTemplate,
-                                    classDecl.getBody().getCoordinates().lastStatement(),
-                                    fullyQualifiedClassName
-                            ));
+                    classDecl.getBody().withTemplate(
+                            helloTemplate,
+                            classDecl.getBody().getCoordinates().lastStatement(),
+                            fullyQualifiedClassName
+                    ));
 
             return classDecl;
         }
