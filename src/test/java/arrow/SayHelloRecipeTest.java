@@ -46,9 +46,7 @@ class SayHelloRecipeTest implements RewriteTest {
               package com.yourorg
 
               class FooBar {
-                  public fun hello(): String {
-                      return "Hello from com.yourorg.FooBar!"
-                  }
+                  public fun hello(): String { return "" }
               }
               """
           )

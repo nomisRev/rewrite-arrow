@@ -14,7 +14,7 @@ import org.openrewrite.java.tree.J;
 import org.openrewrite.kotlin.KotlinIsoVisitor;
 
 @Value
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false)
 public class SayHelloRecipe extends Recipe {
     @Option(displayName = "Fully qualified class name",
             description = "A fully qualified class name indicating which class to add a `hello()` method to.",
@@ -44,7 +44,7 @@ public class SayHelloRecipe extends Recipe {
 
     public class SayHelloVisitor extends KotlinIsoVisitor<ExecutionContext> {
         private final JavaTemplate helloTemplate =
-                JavaTemplate.builder(this::getCursor, "public fun hello(): String { return \"Hello from #{}!\"; }")
+                JavaTemplate.builder(this::getCursor, "public fun hello(): String { return \"Hello from #{}!\" }")
                         .build();
 
         @Override
@@ -66,8 +66,6 @@ public class SayHelloRecipe extends Recipe {
             if (helloMethodExists) {
                 return classDecl;
             }
-
-            final J.Block block = classDecl.getBody();
 
             // Interpolate the fullyQualifiedClassName into the template and use the resulting LST to update the class body
             classDecl = classDecl.withBody(
