@@ -10,6 +10,7 @@ import org.openrewrite.ExecutionContext;
 import org.openrewrite.Option;
 import org.openrewrite.Recipe;
 import org.openrewrite.TreeVisitor;
+import org.openrewrite.java.JavaIsoVisitor;
 import org.openrewrite.java.JavaTemplate;
 import org.openrewrite.java.tree.J;
 import org.openrewrite.kotlin.KotlinIsoVisitor;
@@ -17,8 +18,8 @@ import org.openrewrite.kotlin.KotlinIsoVisitor;
 @Value
 @EqualsAndHashCode(callSuper = false)
 public class SayHelloRecipe extends Recipe {
-    @Option(displayName = "Fully Qualified Class Name",
-            description = "A fully qualified class name indicating which class to add a hello() method to.",
+    @Option(displayName = "Fully qualified class name",
+            description = "A fully qualified class name indicating which class to add a `hello()` method to.",
             example = "com.yourorg.FooBar")
     @NonNull
     String fullyQualifiedClassName;
@@ -29,31 +30,30 @@ public class SayHelloRecipe extends Recipe {
     }
 
     @Override
-    public @NotNull String getDisplayName() {
+    public String getDisplayName() {
         return "Raise Rewrite";
     }
 
     @Override
-    public @NotNull String getDescription() {
+    public String getDescription() {
         return "Rewrites all imports, and builders from arrow.core.computations and arrow.core.continuations to raise.";
     }
 
     @Override
-    protected @NotNull TreeVisitor<?, ExecutionContext> getVisitor() {
+    protected TreeVisitor<?, ExecutionContext> getVisitor() {
         return new SayHelloVisitor();
     }
 
-    public class SayHelloVisitor extends KotlinIsoVisitor<ExecutionContext> {
+    public class SayHelloVisitor extends JavaIsoVisitor<ExecutionContext> {
         private final JavaTemplate helloTemplate =
                 JavaTemplate.builder(this::getCursor, "public String hello() { return \"Hello from #{}!\"; }")
                         .build();
 
         @Override
-        public J.@NotNull ClassDeclaration visitClassDeclaration(
+        public J.ClassDeclaration visitClassDeclaration(
                 J.ClassDeclaration classDecl,
-                @NotNull ExecutionContext executionContext
+                ExecutionContext executionContext
         ) {
-            error();
             if (classDecl.getType() == null || !classDecl.getType().getFullyQualifiedName().equals(fullyQualifiedClassName)) {
                 return classDecl;
             }
@@ -78,10 +78,6 @@ public class SayHelloRecipe extends Recipe {
                     ));
 
             return classDecl;
-        }
-
-        public void error() {
-            throw new RuntimeException("Boom!");
         }
     }
 }

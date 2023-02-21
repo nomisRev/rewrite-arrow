@@ -15,52 +15,55 @@ class SayHelloRecipeTest implements RewriteTest {
     @Test
     void addsHelloToFooBar() {
         rewriteRun(
-                java(
-                        """
-                                    package com.yourorg;
+          //language=java
+          java(
+            """
+              package com.yourorg;
 
-                                    class FooBar {
-                                    }
-                                """,
-                        """
-                                    package com.yourorg;
+              class FooBar {
+              }
+              """,
+            """
+              package com.yourorg;
 
-                                    class FooBar {
-                                        public String hello() {
-                                            return "Hello from com.yourorg.FooBar!";
-                                        }
-                                    }
-                                """
-                )
+              class FooBar {
+                  public String hello() {
+                      return "Hello from com.yourorg.FooBar!";
+                  }
+              }
+              """
+          )
         );
     }
 
     @Test
     void doesNotChangeExistingHello() {
         rewriteRun(
-                java(
-                        """
-                                    package com.yourorg;
+          //language=java
+          java(
+            """
+              package com.yourorg;
 
-                                    class FooBar {
-                                        public String hello() { return ""; }
-                                    }
-                                """
-                )
+              class FooBar {
+                  public String hello() { return ""; }
+              }
+              """
+          )
         );
     }
 
     @Test
     void doesNotChangeOtherClasses() {
         rewriteRun(
-                java(
-                        """
-                                    package com.yourorg;
+          //language=java
+          java(
+            """
+              package com.yourorg;
 
-                                    class Bash {
-                                    }
-                                """
-                )
+              class Bash {
+              }
+              """
+          )
         );
     }
 }
