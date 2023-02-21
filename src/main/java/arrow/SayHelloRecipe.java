@@ -45,7 +45,7 @@ public class SayHelloRecipe extends Recipe {
 
     public class SayHelloVisitor extends JavaIsoVisitor<ExecutionContext> {
         private final JavaTemplate helloTemplate =
-                JavaTemplate.builder(this::getCursor, "public fun hello(): String { return \"Hello from #{}!\" }")
+                JavaTemplate.builder(this::getCursor, "public String hello() { return \"Hello from #{}!\"; }")
                         .build();
 
         @Override
