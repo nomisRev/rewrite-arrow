@@ -8,6 +8,7 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
+    maven("https://oss.sonatype.org/content/repositories/snapshots/")
 }
 
 tasks.named<JavaCompile>("compileJava") {
@@ -16,13 +17,16 @@ tasks.named<JavaCompile>("compileJava") {
 
 tasks.test {
     useJUnitPlatform()
-
 }
 
 rewrite {
     activeRecipe(
         "arrow.SayHelloRecipe"
     )
+}
+
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor(0, "seconds")
 }
 
 dependencies {
@@ -33,7 +37,9 @@ dependencies {
     compileOnly("org.projectlombok:lombok:latest.release")
     implementation("org.openrewrite:rewrite-java")
 
-    implementation("org.openrewrite:rewrite-kotlin:0.2.0")
+    implementation("org.openrewrite:rewrite-kotlin:0.2.0-SNAPSHOT")
+
+    testRuntimeOnly("io.arrow-kt:arrow-core:1.1.6-alpha.28")
 
     testImplementation("org.openrewrite:rewrite-test")
     testImplementation("org.openrewrite.recipe:rewrite-testing-frameworks")
