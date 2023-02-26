@@ -37,7 +37,7 @@ dependencies {
     compileOnly("org.projectlombok:lombok:latest.release")
     implementation("org.openrewrite:rewrite-java")
 
-    implementation("org.openrewrite:rewrite-kotlin:0.2.0-SNAPSHOT")
+    implementation("org.openrewrite:rewrite-kotlin:0.2.1")
 
     testRuntimeOnly("io.arrow-kt:arrow-core:1.1.6-alpha.28")
 
