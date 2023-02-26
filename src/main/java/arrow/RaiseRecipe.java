@@ -34,17 +34,17 @@ public class RaiseRecipe extends Recipe {
 
     public class SayHelloVisitor extends JavaIsoVisitor<ExecutionContext> {
 
-        @Override
-        public J.Import visitImport(J.Import _import, ExecutionContext executionContext) {
-            // TODO rewriting imports can easily be done using yaml
-            if (_import.getQualid().isFullyQualifiedClassReference("arrow.core.continuations.EffectScope")) {
-                _import.withTemplate(
-                        JavaTemplate.builder(this::getCursor, "import arrow.core.raise.Raise").build(),
-                        _import.getCoordinates().replace()
-                );
-            }
-            return _import;
-        }
+//        @Override
+//        public J.Import visitImport(J.Import _import, ExecutionContext executionContext) {
+//            // TODO rewriting imports can easily be done using yaml
+//            if (_import.getQualid().isFullyQualifiedClassReference("arrow.core.continuations.EffectScope")) {
+//                _import.withTemplate(
+//                        JavaTemplate.builder(this::getCursor, "import arrow.core.raise.Raise").build(),
+//                        _import.getCoordinates().replace()
+//                );
+//            }
+//            return _import;
+//        }
 
         @Override
         public J.MethodDeclaration visitMethodDeclaration(

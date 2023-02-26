@@ -1,6 +1,7 @@
 package arrow;
 
 import org.junit.jupiter.api.Test;
+import org.openrewrite.config.Environment;
 import org.openrewrite.java.JavaParser;
 import org.openrewrite.test.RecipeSpec;
 import org.openrewrite.test.RewriteTest;
@@ -11,7 +12,15 @@ class RaiseRecipeTest implements RewriteTest {
     @Override
     public void defaults(RecipeSpec spec) {
         spec.recipe(new RaiseRecipe())
-          .parser(JavaParser.fromJavaVersion().classpath("arrow-core"));
+          .parser(
+            JavaParser.fromJavaVersion()
+              .logCompilationWarningsAndErrors(true)
+              .classpath("arrow-core")
+          )
+          .recipe(Environment.builder()
+            .scanRuntimeClasspath()
+            .build()
+            .activateRecipes("arrow.RaiseImportRefactor"));
     }
 
     @Test
