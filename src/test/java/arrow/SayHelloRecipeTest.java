@@ -5,6 +5,7 @@ import org.openrewrite.test.RecipeSpec;
 import org.openrewrite.test.RewriteTest;
 
 import static org.openrewrite.java.Assertions.java;
+import static org.openrewrite.kotlin.Assertions.kotlin;
 
 class SayHelloRecipeTest implements RewriteTest {
     @Override
@@ -15,20 +16,20 @@ class SayHelloRecipeTest implements RewriteTest {
     @Test
     void addsHelloToFooBar() {
         rewriteRun(
-          //language=java
-          java(
+          //language=kotlin
+          kotlin(
             """
-              package com.yourorg;
+              package com.yourorg
 
               class FooBar {
               }
               """,
             """
-              package com.yourorg;
+              package com.yourorg
 
               class FooBar {
-                  public String hello() {
-                      return "Hello from com.yourorg.FooBar!";
+                  public fun hello(): String {
+                      return "Hello from com.yourorg.FooBar!"
                   }
               }
               """
@@ -39,13 +40,13 @@ class SayHelloRecipeTest implements RewriteTest {
     @Test
     void doesNotChangeExistingHello() {
         rewriteRun(
-          //language=java
-          java(
+          //language=kotlin
+          kotlin(
             """
-              package com.yourorg;
+              package com.yourorg
 
               class FooBar {
-                  public String hello() { return ""; }
+                  public fun hello(): String { return "" }
               }
               """
           )
@@ -55,10 +56,10 @@ class SayHelloRecipeTest implements RewriteTest {
     @Test
     void doesNotChangeOtherClasses() {
         rewriteRun(
-          //language=java
-          java(
+          //language=kotlin
+          kotlin(
             """
-              package com.yourorg;
+              package com.yourorg
 
               class Bash {
               }
