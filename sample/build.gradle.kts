@@ -19,5 +19,12 @@ tasks.findByName("rewriteRun")!!.dependsOn(rootProject.tasks.jar)
 tasks.findByName("rewriteDiscover")!!.dependsOn(rootProject.tasks.jar)
 
 rewrite {
+<<<<<<< HEAD
     //activeRecipe()
+=======
+    activeRecipe(
+        "arrow.RaiseRecipe",
+        "arrow.RaiseImportRefactor"
+    )
+>>>>>>> 7362d90 (Enable RaiseImportRefactor)
 }
