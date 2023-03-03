@@ -3,6 +3,7 @@ package arrow;
 import org.junit.jupiter.api.Test;
 import org.openrewrite.config.Environment;
 import org.openrewrite.java.JavaParser;
+import org.openrewrite.kotlin.KotlinParser;
 import org.openrewrite.test.RecipeSpec;
 import org.openrewrite.test.RewriteTest;
 
@@ -13,14 +14,10 @@ class RaiseRecipeTest implements RewriteTest {
     public void defaults(RecipeSpec spec) {
         spec.recipe(new RaiseRecipe())
           .parser(
-            JavaParser.fromJavaVersion()
+            KotlinParser.builder()
               .logCompilationWarningsAndErrors(true)
               .classpath("arrow-core")
-          )
-          .recipe(Environment.builder()
-            .scanRuntimeClasspath()
-            .build()
-            .activateRecipes("arrow.RaiseImportRefactor"));
+          );
     }
 
     @Test
@@ -30,7 +27,7 @@ class RaiseRecipeTest implements RewriteTest {
           kotlin(
             """
               package com.yourorg
-              
+                            
               import arrow.core.continuations.EffectScope
 
               fun EffectScope<String>.test(): Int {
@@ -40,7 +37,7 @@ class RaiseRecipeTest implements RewriteTest {
               """,
             """
               package com.yourorg
-              
+                            
               import arrow.core.raise.Raise
               import arrow.core.raise.ensure
 

@@ -9,6 +9,7 @@ import org.openrewrite.TreeVisitor;
 import org.openrewrite.java.JavaIsoVisitor;
 import org.openrewrite.java.JavaTemplate;
 import org.openrewrite.java.tree.J;
+import org.openrewrite.kotlin.KotlinIsoVisitor;
 
 @Value
 @EqualsAndHashCode(callSuper = false)
@@ -32,7 +33,7 @@ public class RaiseRecipe extends Recipe {
         return new SayHelloVisitor();
     }
 
-    public class SayHelloVisitor extends JavaIsoVisitor<ExecutionContext> {
+    public class SayHelloVisitor extends KotlinIsoVisitor<ExecutionContext> {
 
 //        @Override
 //        public J.Import visitImport(J.Import _import, ExecutionContext executionContext) {
@@ -46,15 +47,15 @@ public class RaiseRecipe extends Recipe {
 //            return _import;
 //        }
 
-        @Override
-        public J.MethodDeclaration visitMethodDeclaration(
-                J.MethodDeclaration method,
-                ExecutionContext executionContext
-        ) {
-            // TODO Rewrite arrow.core.continuations.EffectScope receiver, or parameters to arrow.core.raise.Raise
-            // TODO Rewrite arrow.core.continuations.EagerEffectScope receiver, or parameters to arrow.core.raise.Raise
-            return super.visitMethodDeclaration(method, executionContext);
-        }
+//        @Override
+//        public J.MethodDeclaration visitMethodDeclaration(
+//                J.MethodDeclaration method,
+//                ExecutionContext executionContext
+//        ) {
+//            // TODO Rewrite arrow.core.continuations.EffectScope receiver, or parameters to arrow.core.raise.Raise
+//            // TODO Rewrite arrow.core.continuations.EagerEffectScope receiver, or parameters to arrow.core.raise.Raise
+//            return super.visitMethodDeclaration(method, executionContext);
+//        }
 
         @Override
         public J.MethodInvocation visitMethodInvocation(
@@ -73,8 +74,8 @@ public class RaiseRecipe extends Recipe {
 
     public boolean isEnsureInvocation(J.MethodInvocation method) {
         return method.getMethodType() != null &&
-                (method.getMethodType().getDeclaringType().getFullyQualifiedName().equals("arrow.core.coroutine.EffectScope") ||
-                        method.getMethodType().getDeclaringType().getFullyQualifiedName().equals("arrow.core.coroutine.EagerEffectScope")
+                (method.getMethodType().getDeclaringType().getFullyQualifiedName().equals("arrow.core.continuations.EffectScope") ||
+                        method.getMethodType().getDeclaringType().getFullyQualifiedName().equals("arrow.core.continuations.EagerEffectScope")
                 ) && method.getMethodType().getName().equals("ensure");
     }
 }
