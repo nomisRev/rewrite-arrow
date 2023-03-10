@@ -30,20 +30,17 @@ class RaiseRecipeTest implements RewriteTest {
                             
               import arrow.core.continuations.EffectScope
 
-              fun EffectScope<String>.test(): Int {
-                ensure(false) { "failure" }
-                return 1
+              fun test(scope: EffectScope<String>): Int {
+                return scope.shift(false) { "failure" }
               }
               """,
             """
               package com.yourorg
                             
               import arrow.core.raise.Raise
-              import arrow.core.raise.ensure
 
-              fun Raise<String>.test(): Int {
-                ensure(false) { "failure" }
-                return 1
+              fun test(scope: Raise<String>): Int {
+                return scope.shift(false) { "failure" }
               }
               """
           )

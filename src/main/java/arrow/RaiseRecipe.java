@@ -1,19 +1,11 @@
 package arrow;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import kotlin.collections.CollectionsKt;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.Recipe;
 import org.openrewrite.TreeVisitor;
-import org.openrewrite.java.JavaIsoVisitor;
-import org.openrewrite.java.JavaTemplate;
-import org.openrewrite.java.tree.*;
-import org.openrewrite.kotlin.KotlinIsoVisitor;
-
-import java.lang.invoke.MethodType;
-import java.util.stream.Collectors;
 
 @Value
 @EqualsAndHashCode(callSuper = false)
@@ -41,26 +33,26 @@ public class RaiseRecipe extends Recipe {
         );
     }
 
-    public class SayHelloVisitor extends KotlinIsoVisitor<ExecutionContext> {
-        @Override
-        public J.MethodInvocation visitMethodInvocation(
-                J.MethodInvocation method,
-                ExecutionContext executionContext
-        ) {
-            // TODO Rewrite shift method invocation to raise, this can easily be done with yaml?
-
-            // If the method invocation is an ensure invocation, add an import for ensure
-            if (isEnsureInvocation(method)) {
-                maybeAddImport("arrow.core.raise.ensure");
-            }
-            return method;
-        }
-    }
-
-    public boolean isEnsureInvocation(J.MethodInvocation method) {
-        return method.getMethodType() != null &&
-                (method.getMethodType().getDeclaringType().getFullyQualifiedName().equals("arrow.core.continuations.EffectScope") ||
-                        method.getMethodType().getDeclaringType().getFullyQualifiedName().equals("arrow.core.continuations.EagerEffectScope")
-                ) && method.getMethodType().getName().equals("ensure");
-    }
+//    public class SayHelloVisitor extends KotlinIsoVisitor<ExecutionContext> {
+//        @Override
+//        public J.MethodInvocation visitMethodInvocation(
+//                J.MethodInvocation method,
+//                ExecutionContext executionContext
+//        ) {
+//            // TODO Rewrite shift method invocation to raise, this can easily be done with yaml?
+//
+//            // If the method invocation is an ensure invocation, add an import for ensure
+//            if (isEnsureInvocation(method)) {
+//                maybeAddImport("arrow.core.raise.ensure");
+//            }
+//            return method;
+//        }
+//    }
+//
+//    public boolean isEnsureInvocation(J.MethodInvocation method) {
+//        return method.getMethodType() != null &&
+//                (method.getMethodType().getDeclaringType().getFullyQualifiedName().equals("arrow.core.continuations.EffectScope") ||
+//                        method.getMethodType().getDeclaringType().getFullyQualifiedName().equals("arrow.core.continuations.EagerEffectScope")
+//                ) && method.getMethodType().getName().equals("ensure");
+//    }
 }
