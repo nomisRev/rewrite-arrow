@@ -34,7 +34,11 @@ public class RaiseRecipe extends Recipe {
 
     @Override
     protected TreeVisitor<?, ExecutionContext> getVisitor() {
-        return new SayHelloVisitor();
+        return new ChangeType.ChangeTypeVisitor(
+                "arrow.core.continuations.EffectScope",
+                "arrow.core.raise.Raise",
+                true
+        );
     }
 
     public class SayHelloVisitor extends KotlinIsoVisitor<ExecutionContext> {

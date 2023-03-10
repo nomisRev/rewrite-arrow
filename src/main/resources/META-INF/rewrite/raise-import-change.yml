@@ -3,10 +3,10 @@ name: arrow.RaiseImportRefactor
 displayName: Refactor imports to Arrow Core Raise
 description: Migration file to refactor import from Arrow Core Continuations to Raise.
 recipeList:
-    - org.openrewrite.java.ChangeType:
+    - arrow.ChangeType:
           oldFullyQualifiedTypeName: arrow.core.continuations.EffectScope
           newFullyQualifiedTypeName: arrow.core.raise.Raise
-    - org.openrewrite.java.ChangeType:
+    - arrow.ChangeType:
           oldFullyQualifiedTypeName: arrow.core.continuations.EagerEffectScope
           newFullyQualifiedTypeName: arrow.core.raise.Raise
 
