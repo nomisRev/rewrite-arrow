@@ -9,12 +9,15 @@ recipeList:
     - org.openrewrite.java.ChangeType:
           oldFullyQualifiedTypeName: arrow.core.continuations.EagerEffectScope
           newFullyQualifiedTypeName: arrow.core.raise.Raise
-    - org.openrewrite.java.ChangePackage:
-          oldPackageName: import arrow.core.continuations.EffectScope
-          newPackageName: import arrow.core.raise.Raise
-    - org.openrewrite.java.ChangePackage:
-          oldPackageName: import arrow.core.continuations.EagerEffectScope
-          newPackageName: import arrow.core.raise.Raise
+
+# Are these still necessary if we have ChangeType?
+#    - org.openrewrite.java.ChangePackage:
+#          oldPackageName: import arrow.core.continuations.EffectScope
+#          newPackageName: import arrow.core.raise.Raise
+#    - org.openrewrite.java.ChangePackage:
+#          oldPackageName: import arrow.core.continuations.EagerEffectScope
+#          newPackageName: import arrow.core.raise.Raise
+# These are other imports that need to be changed, also not working
 #    - org.openrewrite.java.ChangePackage:
 #        oldPackageName: import arrow.core.continuations.either
 #        newPackageName: import arrow.core.raise.either
