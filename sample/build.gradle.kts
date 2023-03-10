@@ -23,8 +23,8 @@ rewrite {
     //activeRecipe()
 =======
     activeRecipe(
+        "arrow.RaiseImportRefactor",
         "arrow.RaiseRecipe",
-        "arrow.RaiseImportRefactor"
     )
 >>>>>>> 7362d90 (Enable RaiseImportRefactor)
 }

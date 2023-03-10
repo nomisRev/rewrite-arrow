@@ -1,6 +1,7 @@
 package arrow;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import kotlin.collections.CollectionsKt;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import org.openrewrite.ExecutionContext;
@@ -8,8 +9,11 @@ import org.openrewrite.Recipe;
 import org.openrewrite.TreeVisitor;
 import org.openrewrite.java.JavaIsoVisitor;
 import org.openrewrite.java.JavaTemplate;
-import org.openrewrite.java.tree.J;
+import org.openrewrite.java.tree.*;
 import org.openrewrite.kotlin.KotlinIsoVisitor;
+
+import java.lang.invoke.MethodType;
+import java.util.stream.Collectors;
 
 @Value
 @EqualsAndHashCode(callSuper = false)
@@ -54,6 +58,62 @@ public class RaiseRecipe extends Recipe {
 //        ) {
 //            // TODO Rewrite arrow.core.continuations.EffectScope receiver, or parameters to arrow.core.raise.Raise
 //            // TODO Rewrite arrow.core.continuations.EagerEffectScope receiver, or parameters to arrow.core.raise.Raise
+//            return super.visitMethodDeclaration(method, executionContext);
+//        }
+
+
+//        @Override
+//        public J visitMethodDeclaration(J.MethodDeclaration method, ExecutionContext executionContext) {
+//            // TODO Rewrite arrow.core.continuations.EffectScope receiver, or parameters to arrow.core.raise.Raise
+//            // TODO Rewrite arrow.core.continuations.EagerEffectScope receiver, or parameters to arrow.core.raise.Raise
+//
+//            if (
+//                    method.getParameters().stream().anyMatch((statement) -> {
+//                        J.VariableDeclarations padded = (J.VariableDeclarations) statement;
+//                        return padded.getVariables().stream().anyMatch((variable) -> {
+//                            JavaType.Parameterized parameterized = (JavaType.Parameterized) variable.getInitializer().getType();
+//                            return parameterized.getFullyQualifiedName().equals("arrow.core.continuations.EffectScope");
+//                        });
+//                    })
+//            ) {
+//                J.MethodDeclaration method2 = method.withParameters(
+//                        method.getParameters().stream().map((statement) -> {
+//                            if (statement instanceof J.VariableDeclarations) {
+//                                J.VariableDeclarations padded = (J.VariableDeclarations) statement;
+//                                J.VariableDeclarations updated = padded.withVariables(
+//
+//                                        padded.getVariables().stream().map((variable) -> {
+//                                            JavaType.Parameterized parameterized = (JavaType.Parameterized) variable.getInitializer().getType();
+//                                            if (parameterized.getFullyQualifiedName().equals("arrow.core.continuations.EffectScope")) {
+//                                                String s = parameterized.getTypeParameters().get(0).toString();
+//
+////                                                J.VariableDeclarations.NamedVariable j = variable.withTemplate(
+////                                                        JavaTemplate.builder(
+////                                                                this::getCursor,
+////                                                                "Raise<kotlin.String>"
+////                                                        ).imports("arrow.core.raise.Raise").build(),
+////                                                        variable.getInitializer().getCoordinates().replace()
+////                                                );
+//                                                return variable;
+//
+////                                                JavaType.FullyQualified updated2 = parameterized.withFullyQualifiedName("arrow.core.raise.Raise");
+////                                                JavaType.Parameterized parameterized1 = parameterized.withType(updated2);
+////                                                J.VariableDeclarations.NamedVariable namedVariable = variable
+////                                                        .withType(parameterized1)
+////                                                        .withInitializer(variable.getInitializer().withType(parameterized1));
+////                                                return variable;
+//                                            } else {
+//                                                return variable;
+//                                            }
+//                                        }).collect(Collectors.toList()));
+//                                return updated;
+//                            } else {
+//                                return statement;
+//                            }
+//                        }).collect(Collectors.toList())
+//                );
+//                return method2;
+//            }
 //            return super.visitMethodDeclaration(method, executionContext);
 //        }
 
