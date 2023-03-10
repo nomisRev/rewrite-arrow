@@ -2,7 +2,7 @@
 org-junit-jupiter = "5.9.2"
 lombok = "1.18.26"
 logback = "1.4.5"
-arrow = "1.1.6-alpha.48"
+arrow = "1.1.6-alpha.49"
 rewrite = "1.16.3"
 openrewrite = "5.37.1"
 assertj = "3.24.2"
