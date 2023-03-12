@@ -19,5 +19,5 @@ tasks.findByName("rewriteRun")!!.dependsOn(rootProject.tasks.jar)
 tasks.findByName("rewriteDiscover")!!.dependsOn(rootProject.tasks.jar)
 
 rewrite {
-    //activeRecipe()
+    activeRecipe("arrow.RaiseRefactor")
 }
