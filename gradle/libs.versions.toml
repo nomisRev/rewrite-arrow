@@ -3,19 +3,19 @@ org-junit-jupiter = "5.9.2"
 lombok = "1.18.26"
 logback = "1.4.5"
 arrow = "1.1.6-alpha.51"
-rewrite = "1.17.0"
+#rewrite = "1.17.0"
+rewrite = "latest.integration"
 openrewrite = "5.38.0"
 assertj = "3.24.2"
-rewrite-kotlin = "0.2.4"
 kotlin = "1.8.10"
 
 [libraries]
 lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
-arrow-core = { module = "io.arrow-kt:arrow-core", version.ref = "arrow" }
+arrow-core = { module = "io.arrow-kt:arrow-core-jvm", version.ref = "arrow" }
 rewrite-recipe-bom = { module = "org.openrewrite.recipe:rewrite-recipe-bom", version.ref = "rewrite" }
 rewrite-java = { module = "org.openrewrite:rewrite-java" }
 rewrite-core = { module = "org.openrewrite:rewrite-core" }
-rewrite-kotlin = { module = "org.openrewrite:rewrite-kotlin", version.ref = "rewrite-kotlin" }
+rewrite-kotlin = { module = "org.openrewrite:rewrite-kotlin" }
 
 rewrite-test = { module = "org.openrewrite:rewrite-test" }
 rewrite-testing-frameworks = { module = "org.openrewrite.recipe:rewrite-testing-frameworks" }
