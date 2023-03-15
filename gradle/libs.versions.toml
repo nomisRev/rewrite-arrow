@@ -1,8 +1,8 @@
 [versions]
 org-junit-jupiter = "5.9.2"
 lombok = "1.18.26"
-logback = "1.4.5"
-arrow = "1.1.6-alpha.51"
+logback = "1.4.6"
+arrow = "1.1.6-alpha.52"
 #rewrite = "1.17.0"
 rewrite = "latest.integration"
 openrewrite = "5.38.0"
