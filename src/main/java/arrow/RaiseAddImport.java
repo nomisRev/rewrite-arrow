@@ -6,15 +6,14 @@ import lombok.Value;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.Recipe;
 import org.openrewrite.TreeVisitor;
-import org.openrewrite.java.AddImport;
 import org.openrewrite.java.tree.J;
 import org.openrewrite.kotlin.KotlinIsoVisitor;
 
 @Value
 @EqualsAndHashCode(callSuper = true)
-public class RaiseRecipe extends Recipe {
+public class RaiseAddImport extends Recipe {
     @JsonCreator
-    public RaiseRecipe() {
+    public RaiseAddImport() {
     }
 
     @Override
@@ -39,8 +38,6 @@ public class RaiseRecipe extends Recipe {
                 J.MethodInvocation method,
                 ExecutionContext executionContext
         ) {
-            // TODO Rewrite shift method invocation to raise, this can easily be done with yaml?
-
             // If the method invocation is an ensure invocation, add an import for ensure
             if (isEnsureInvocation(method)) {
                 maybeAddImport("arrow.core.RaiseKt", "ensure", false);

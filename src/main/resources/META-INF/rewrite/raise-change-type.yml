@@ -9,3 +9,4 @@ recipeList:
     - org.openrewrite.java.ChangeType:
         oldFullyQualifiedTypeName: arrow.core.continuations.EagerEffectScope
         newFullyQualifiedTypeName: arrow.core.raise.Raise
+    - arrow.RaiseAddImport
