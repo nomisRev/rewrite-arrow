@@ -30,16 +30,23 @@ public class RaiseAddImport extends Recipe {
     protected TreeVisitor<?, ExecutionContext> getVisitor() {
         return new RaiseImportVisitor();
     }
-
+    @Override
+    protected TreeVisitor<?, ExecutionContext> getSingleSourceApplicableTest() {
+        return Applicability.or(
+                new UsesType<>("arrow.core.continuations.EffectScope"),
+                new UsesType<>("arrow.core.continuations.EagerEffectScope")
+        );
+    }
     public class RaiseImportVisitor extends KotlinIsoVisitor<ExecutionContext> {
-
+        MethodMatcher effectScopeMatcher = new MethodMatcher("arrow.core.continuations.EffectScope ensure(..)");
+        MethodMatcher eagerEffectScopeMatcher = new MethodMatcher("arrow.core.continuations.EagerEffectScope ensure(..)");
         @Override
         public J.MethodInvocation visitMethodInvocation(
                 J.MethodInvocation method,
                 ExecutionContext executionContext
         ) {
             // If the method invocation is an ensure invocation, add an import for ensure
-            if (isEnsureInvocation(method)) {
+            if (effectScopeMatcher.matches(method) || eagerEffectScopeMatcher.matches(method)) {
                 maybeAddImport("arrow.core.RaiseKt", "ensure", false);
             }
             return method;
