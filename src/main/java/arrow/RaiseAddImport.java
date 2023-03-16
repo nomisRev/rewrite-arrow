@@ -3,9 +3,12 @@ package arrow;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
+import org.openrewrite.Applicability;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.Recipe;
 import org.openrewrite.TreeVisitor;
+import org.openrewrite.java.MethodMatcher;
+import org.openrewrite.java.search.UsesType;
 import org.openrewrite.java.tree.J;
 import org.openrewrite.kotlin.KotlinIsoVisitor;
 
@@ -30,6 +33,7 @@ public class RaiseAddImport extends Recipe {
     protected TreeVisitor<?, ExecutionContext> getVisitor() {
         return new RaiseImportVisitor();
     }
+
     @Override
     protected TreeVisitor<?, ExecutionContext> getSingleSourceApplicableTest() {
         return Applicability.or(
@@ -37,9 +41,11 @@ public class RaiseAddImport extends Recipe {
                 new UsesType<>("arrow.core.continuations.EagerEffectScope")
         );
     }
+
     public class RaiseImportVisitor extends KotlinIsoVisitor<ExecutionContext> {
         MethodMatcher effectScopeMatcher = new MethodMatcher("arrow.core.continuations.EffectScope ensure(..)");
         MethodMatcher eagerEffectScopeMatcher = new MethodMatcher("arrow.core.continuations.EagerEffectScope ensure(..)");
+
         @Override
         public J.MethodInvocation visitMethodInvocation(
                 J.MethodInvocation method,
@@ -47,16 +53,10 @@ public class RaiseAddImport extends Recipe {
         ) {
             // If the method invocation is an ensure invocation, add an import for ensure
             if (effectScopeMatcher.matches(method) || eagerEffectScopeMatcher.matches(method)) {
-                maybeAddImport("arrow.core.RaiseKt", "ensure", false);
+                maybeAddImport("arrow.core.raise.RaiseKt", "ensure");
+                maybeAddImport("arrow.core.raise.ensure");
             }
             return method;
         }
-    }
-
-    public boolean isEnsureInvocation(J.MethodInvocation method) {
-        return method.getMethodType() != null &&
-                (method.getMethodType().getDeclaringType().getFullyQualifiedName().equals("arrow.core.continuations.EffectScope") ||
-                        method.getMethodType().getDeclaringType().getFullyQualifiedName().equals("arrow.core.continuations.EagerEffectScope")
-                ) && method.getMethodType().getName().equals("ensure");
     }
 }

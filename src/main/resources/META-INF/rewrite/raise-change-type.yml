@@ -9,10 +9,10 @@ recipeList:
     - org.openrewrite.java.ChangeMethodName:
           methodPattern: arrow.core.continuations.EagerEffectScope shift(*)
           newMethodName: raise
+    - arrow.RaiseAddImport
     - org.openrewrite.java.ChangeType:
           oldFullyQualifiedTypeName: arrow.core.continuations.EffectScope
           newFullyQualifiedTypeName: arrow.core.raise.Raise
     - org.openrewrite.java.ChangeType:
         oldFullyQualifiedTypeName: arrow.core.continuations.EagerEffectScope
         newFullyQualifiedTypeName: arrow.core.raise.Raise
-    - arrow.RaiseAddImport
