@@ -21,7 +21,7 @@ jobs:
       - name: check
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: build
+          arguments: build --full-stacktrace
 
       - name: Upload reports
         if: failure()
