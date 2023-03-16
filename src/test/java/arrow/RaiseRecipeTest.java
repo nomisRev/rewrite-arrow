@@ -1,7 +1,7 @@
 package arrow;
 
 import org.junit.jupiter.api.Test;
-import org.openrewrite.java.ChangeType;
+import org.openrewrite.config.Environment;
 import org.openrewrite.kotlin.KotlinParser;
 import org.openrewrite.test.RecipeSpec;
 import org.openrewrite.test.RewriteTest;
@@ -11,7 +11,12 @@ import static org.openrewrite.kotlin.Assertions.kotlin;
 class RaiseRecipeTest implements RewriteTest {
     @Override
     public void defaults(RecipeSpec spec) {
-        spec.recipe(new ChangeType("arrow.core.continuations.EffectScope", "arrow.core.Raise", true))
+        spec.recipe(
+            Environment.builder()
+              .scanRuntimeClasspath()
+              .build()
+              .activateRecipes("arrow.RaiseRefactor")
+          )
           .parser(
             KotlinParser.builder()
               .logCompilationWarningsAndErrors(true)
@@ -20,7 +25,7 @@ class RaiseRecipeTest implements RewriteTest {
     }
 
     @Test
-    void addEnsureImportForRaiseExtensionFunction() {
+    void effectScopeParameter() {
         rewriteRun(
           kotlin(
             """
@@ -28,8 +33,8 @@ class RaiseRecipeTest implements RewriteTest {
                             
               import arrow.core.continuations.EffectScope
 
-              fun test(scope: EffectScope<String>): Int {
-                return scope.shift(false) { "failure" }
+              suspend fun test(scope: EffectScope<String>): Int {
+                return scope.shift("failure")
               }
               """,
             """
@@ -37,9 +42,59 @@ class RaiseRecipeTest implements RewriteTest {
                             
               import arrow.core.raise.Raise
 
-              fun test(scope: Raise<String>): Int {
-                return scope.shift(false) { "failure" }
+              suspend fun test(scope: Raise<String>): Int {
+                return scope.shift("failure")
               }
+              """
+          )
+        );
+    }
+
+    @Test
+    void effectScopeReceiver() {
+        rewriteRun(
+          kotlin(
+            """
+              package com.yourorg
+                            
+              import arrow.core.continuations.EffectScope
+
+              suspend fun EffectScope<String>.test(): Int {
+                return shift("failure")
+              }
+              """,
+            """
+              package com.yourorg
+                            
+              import arrow.core.raise.Raise
+
+              suspend fun Raise<String>.test(): Int {
+                return shift("failure")
+              }
+              """
+          )
+        );
+    }
+
+    @Test
+    void effectScopeReceiverExpression() {
+        rewriteRun(
+          kotlin(
+            """
+              package com.yourorg
+                            
+              import arrow.core.continuations.EffectScope
+
+              suspend fun EffectScope<String>.test(): Int =
+                shift("failure")
+              """,
+            """
+              package com.yourorg
+                            
+              import arrow.core.raise.Raise
+
+              suspend fun Raise<String>.test(): Int =
+                shift("failure")
               """
           )
         );
