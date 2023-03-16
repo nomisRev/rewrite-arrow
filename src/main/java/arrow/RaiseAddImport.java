@@ -47,10 +47,7 @@ public class RaiseAddImport extends Recipe {
         MethodMatcher eagerEffectScopeMatcher = new MethodMatcher("arrow.core.continuations.EagerEffectScope ensure(..)");
 
         @Override
-        public J.MethodInvocation visitMethodInvocation(
-                J.MethodInvocation method,
-                ExecutionContext executionContext
-        ) {
+        public J.MethodInvocation visitMethodInvocation(J.MethodInvocation method, ExecutionContext executionContext) {
             // If the method invocation is an ensure invocation, add an import for ensure
             if (effectScopeMatcher.matches(method) || eagerEffectScopeMatcher.matches(method)) {
                 maybeAddImport("arrow.core.raise.RaiseKt", "ensure");
