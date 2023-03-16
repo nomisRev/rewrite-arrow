@@ -44,7 +44,7 @@ class RaiseRecipeTest implements RewriteTest {
               import arrow.core.raise.Raise
 
               suspend fun test(scope: Raise<String>): Int {
-                return scope.shift("failure")
+                return scope.raise("failure")
               }
               """
           )
@@ -70,7 +70,7 @@ class RaiseRecipeTest implements RewriteTest {
               import arrow.core.raise.Raise
 
               suspend fun Raise<String>.test(): Int {
-                return shift("failure")
+                return raise("failure")
               }
               """
           )
@@ -95,7 +95,7 @@ class RaiseRecipeTest implements RewriteTest {
               import arrow.core.raise.Raise
 
               suspend fun Raise<String>.test(): Int =
-                shift("failure")
+                raise("failure")
               """
           )
         );
@@ -120,7 +120,7 @@ class RaiseRecipeTest implements RewriteTest {
               import arrow.core.raise.Raise
 
               fun test(scope: Raise<String>): Int {
-                return scope.shift("failure")
+                return scope.raise("failure")
               }
               """
           )
@@ -146,7 +146,7 @@ class RaiseRecipeTest implements RewriteTest {
               import arrow.core.raise.Raise
 
               fun Raise<String>.test(): Int {
-                return shift("failure")
+                return raise("failure")
               }
               """
           )
@@ -171,7 +171,7 @@ class RaiseRecipeTest implements RewriteTest {
               import arrow.core.raise.Raise
 
               fun Raise<String>.test(): Int =
-                shift("failure")
+                raise("failure")
               """
           )
         );
