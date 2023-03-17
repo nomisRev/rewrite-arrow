@@ -216,4 +216,43 @@ class RewriteEagerEffectScopeTest implements RewriteTest {
           )
         );
     }
+
+    @Test
+    void eagerEffectThreeParamsFoldRewrite() {
+        rewriteRun(
+          kotlin(
+            """
+              package com.yourorg
+                            
+              import arrow.core.continuations.eagerEffect
+                            
+              suspend fun example() {
+                eagerEffect<String, Int> {
+                  1
+                }.fold(
+                  { throw it },
+                  { 0 },
+                  { it }
+                )
+              }
+              """,
+            """
+              package com.yourorg
+                            
+              import arrow.core.raise.eagerEffect
+              import arrow.core.raise.fold
+                            
+              suspend fun example() {
+                eagerEffect<String, Int> {
+                  1
+                }.fold(
+                  { throw it },
+                  { 0 },
+                  { it }
+                )
+              }
+              """
+          )
+        );
+    }
 }
