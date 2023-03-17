@@ -176,4 +176,28 @@ class RaiseRecipeTest implements RewriteTest {
           )
         );
     }
+
+    @Test
+    void rewriteTopLevelExtensionFunctions() {
+        rewriteRun(
+          kotlin(
+            """
+              package com.yourorg
+                            
+              import arrow.core.Validated
+              import arrow.core.valid
+
+              val x: Validated<String, Int> = 1.valid()
+              """,
+            """
+              package com.yourorg
+                            
+              import arrow.core.Either
+              import arrow.core.right
+
+              val x: Either<String, Int> = 1.right()
+              """
+          )
+        );
+    }
 }
