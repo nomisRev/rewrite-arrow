@@ -50,8 +50,7 @@ public class RaiseAddImport extends Recipe {
         public J.MethodInvocation visitMethodInvocation(J.MethodInvocation method, ExecutionContext executionContext) {
             // If the method invocation is an ensure invocation, add an import for ensure
             if (effectScopeMatcher.matches(method) || eagerEffectScopeMatcher.matches(method)) {
-                maybeAddImport("arrow.core.raise.RaiseKt", "ensure");
-                maybeAddImport("arrow.core.raise.ensure");
+                maybeAddImport("arrow.core.raise.ensure", null, false);
             }
             return method;
         }
