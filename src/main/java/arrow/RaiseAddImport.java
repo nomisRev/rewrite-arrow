@@ -40,16 +40,16 @@ public class RaiseAddImport extends Recipe {
         return Applicability.or(
                 new UsesType<>("arrow.core.raise.Raise"),
                 new UsesType<>("arrow.core.raise.Effect"),
-                new UsesType<>("arrow.core.raise.EagerEffect"),
-                new UsesMethod<>("arrow.core.raise.RaiseKt effect(..)")
+                new UsesType<>("arrow.core.raise.EagerEffect")
         );
     }
 
-    public static class RaiseImportVisitor extends KotlinIsoVisitor<ExecutionContext> {
-        MethodMatcher effectScopeMatcher = new MethodMatcher("arrow.core.continuations.EffectScope ensure(..)");
-        MethodMatcher eagerEffectScopeMatcher = new MethodMatcher("arrow.core.continuations.EagerEffectScope ensure(..)");
-        MethodMatcher raiseEnsureMatcher = new MethodMatcher("arrow.core.raise.Raise ensure(..)");
+    private static class RaiseImportVisitor extends KotlinIsoVisitor<ExecutionContext> {
+        private final MethodMatcher effectScopeMatcher = new MethodMatcher("arrow.core.continuations.EffectScope ensure(..)");
+        private final MethodMatcher eagerEffectScopeMatcher = new MethodMatcher("arrow.core.continuations.EagerEffectScope ensure(..)");
+        private final MethodMatcher raiseEnsureMatcher = new MethodMatcher("arrow.core.raise.Raise ensure(..)");
 
+        // We need to override visitLambda, so that visitMethodInvocation will also get called on the lambda's body.
         @Override
         public J visitLambda(J.Lambda lambda, ExecutionContext executionContext) {
             return super.visitLambda(lambda, executionContext);
@@ -58,7 +58,7 @@ public class RaiseAddImport extends Recipe {
         @Override
         public J.MethodInvocation visitMethodInvocation(J.MethodInvocation method, ExecutionContext executionContext) {
             J.MethodInvocation m = (J.MethodInvocation) super.visitMethodInvocation(method, executionContext);
-            // If the method invocation is an ensure invocation, add an import for ensure
+            // If we get called on a lambda's body, the method invocation will still be typed to EffectScope & EagerEffectScope.
             if (raiseEnsureMatcher.matches(m) || effectScopeMatcher.matches(m) || eagerEffectScopeMatcher.matches(m)) {
                 maybeAddImport("arrow.core.raise.ensure", false);
             }

@@ -1,13 +1,11 @@
 package arrow;
 
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.micrometer.core.lang.Nullable;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import org.openrewrite.*;
-import org.openrewrite.java.ChangeType;
 import org.openrewrite.java.MethodMatcher;
 import org.openrewrite.java.search.UsesMethod;
 import org.openrewrite.java.tree.J;
@@ -64,7 +62,7 @@ public class ChangeTopLevelFunction extends Recipe {
         return new ChangeTopLevelFunctionVisitor(new MethodMatcher(methodPattern));
     }
 
-    public class ChangeTopLevelFunctionVisitor extends KotlinIsoVisitor<ExecutionContext> {
+    private class ChangeTopLevelFunctionVisitor extends KotlinIsoVisitor<ExecutionContext> {
         private final MethodMatcher methodMatcher;
 
         private ChangeTopLevelFunctionVisitor(MethodMatcher methodMatcher) {
@@ -77,7 +75,9 @@ public class ChangeTopLevelFunction extends Recipe {
             if (methodMatcher.matches(method)) {
                 String importToRemove = m.getMethodType().getDeclaringType().getPackageName() + "." + m.getName().getSimpleName();
                 m = m.withName(m.getName().withSimpleName(newMethodName));
-                if (newMethodName != null) maybeAddImport(newMethodImport, null, false);
+                if (newMethodName != null) {
+                    maybeAddImport(newMethodImport, null, false);
+                }
                 maybeRemoveImport(importToRemove);
             }
             return m;

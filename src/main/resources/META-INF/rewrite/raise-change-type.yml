@@ -7,26 +7,29 @@ recipeList:
         methodPattern: arrow.core.continuations.EffectKt effect
         newMethodName: effect
         newMethodImport: arrow.core.raise.effect
+    - org.openrewrite.java.ChangeMethodName:
+        methodPattern: arrow.core.continuations.EffectScope shift(*)
+        newMethodName: raise
+    - org.openrewrite.java.ChangeType:
+        oldFullyQualifiedTypeName: arrow.core.continuations.EffectScope
+        newFullyQualifiedTypeName: arrow.core.raise.Raise
+    - org.openrewrite.java.ChangeType:
+        oldFullyQualifiedTypeName: arrow.core.continuations.Effect
+        newFullyQualifiedTypeName: arrow.core.raise.Effect
+
     - arrow.ChangeTopLevelFunction:
         methodPattern: arrow.core.continuations.EagerEffectKt eagerEffect
         newMethodName: eagerEffect
         newMethodImport: arrow.core.raise.eagerEffect
     - org.openrewrite.java.ChangeMethodName:
-        methodPattern: arrow.core.continuations.EffectScope shift(*)
-        newMethodName: raise
-    - org.openrewrite.java.ChangeMethodName:
           methodPattern: arrow.core.continuations.EagerEffectScope shift(*)
           newMethodName: raise
-    - org.openrewrite.java.ChangeType:
-          oldFullyQualifiedTypeName: arrow.core.continuations.EffectScope
-          newFullyQualifiedTypeName: arrow.core.raise.Raise
     - org.openrewrite.java.ChangeType:
         oldFullyQualifiedTypeName: arrow.core.continuations.EagerEffectScope
         newFullyQualifiedTypeName: arrow.core.raise.Raise
     - org.openrewrite.java.ChangeType:
-          oldFullyQualifiedTypeName: arrow.core.continuations.Effect
-          newFullyQualifiedTypeName: arrow.core.raise.Effect
-    - org.openrewrite.java.ChangeType:
           oldFullyQualifiedTypeName: arrow.core.continuations.EagerEffect
           newFullyQualifiedTypeName: arrow.core.raise.EagerEffect
+
     - arrow.RaiseAddImport
+    - arrow.RaiseFoldImport
