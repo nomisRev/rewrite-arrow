@@ -75,8 +75,10 @@ public class ChangeTopLevelFunction extends Recipe {
         public J visitMethodInvocation(J.MethodInvocation method, ExecutionContext executionContext) {
             J.MethodInvocation m = (J.MethodInvocation) super.visitMethodInvocation(method, executionContext);
             if (methodMatcher.matches(method) && !method.getSimpleName().equals(newMethodName)) {
+                String importToRemove = m.getMethodType().getDeclaringType().getPackageName() + "." + m.getName().getSimpleName();
                 m = m.withName(m.getName().withSimpleName(newMethodName));
-                maybeAddImport(newMethodImport);
+                maybeAddImport(newMethodImport, null, false);
+                maybeRemoveImport(importToRemove);
             }
             return m;
         }
