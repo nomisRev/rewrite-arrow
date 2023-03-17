@@ -148,4 +148,35 @@ class RewriteEffectScopeTest implements RewriteTest {
           )
         );
     }
+
+    @Test
+    void effectAndEnsureDSLRewrite() {
+        rewriteRun(
+          kotlin(
+            """
+              package com.yourorg
+                            
+              import arrow.core.continuations.Effect
+              import arrow.core.continuations.effect
+
+              val x: Effect<String, Int> = effect {
+                ensure(false) { "failure" }
+                1
+              }
+              """,
+            """
+              package com.yourorg
+                            
+              import arrow.core.raise.Effect
+              import arrow.core.raise.effect
+              import arrow.core.raise.ensure
+
+              val x: Effect<String, Int> = effect {
+                ensure(false) { "failure" }
+                1
+              }
+              """
+          )
+        );
+    }
 }
