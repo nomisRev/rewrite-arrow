@@ -1,0 +1,12 @@
+type: specs.openrewrite.org/v1beta/recipe
+name: arrow.ValidatedToEitherRecipe
+displayName: Refactor Arrow Core Validated to Either
+description: Migration file to refactor from Validated to Either
+recipeList:
+    - arrow.ChangeTopLevelFunction:
+        methodPattern: arrow.core.ValidatedKt valid(*)
+        newMethodName: right
+        newMethodImport: arrow.core.right
+    - org.openrewrite.java.ChangeType:
+        oldFullyQualifiedTypeName: arrow.core.Validated
+        newFullyQualifiedTypeName: arrow.core.Either
