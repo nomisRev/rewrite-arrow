@@ -61,13 +61,17 @@ public class ChangeObjectMethodToTopLevelFunction extends Recipe {
             this.methodMatcher = methodMatcher;
         }
 
+        // TODO add import for new method
+        // TODO Remove import for old method
+
         @Override
         public J visitMethodInvocation(J.MethodInvocation method, ExecutionContext executionContext) {
             J.MethodInvocation m = (J.MethodInvocation) super.visitMethodInvocation(method, executionContext);
             if (methodMatcher.matches(method) && !method.getSimpleName().equals(newMethodName)) {
                 m = m
+                         // TODO remove declaring type
 //                        .withDeclaringType(JavaType.ShallowClass.build("arrow.core.RaiseKt"))
-                        .withDeclaringType(JavaType.Class.build("arrow.core.RaiseKt"))
+                        .withDeclaringType(JavaType.ShallowClass.build("arrow.core.RaiseKt"))
                         .withName(m.getName().withSimpleName(newMethodName));
             }
             return m;

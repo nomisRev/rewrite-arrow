@@ -205,4 +205,32 @@ class RaiseRecipeTest implements RewriteTest {
           )
         );
     }
+
+    @Test
+    void eitherOperatorInvokeToEitherDSL() {
+        rewriteRun(
+          kotlin(
+            """
+              package com.yourorg
+                            
+              import arrow.core.Either
+              import arrow.core.continuations.either
+
+              fun test(): Either<String, Int> = either {
+                1
+              }
+              """,
+            """
+              package com.yourorg
+                            
+              import arrow.core.Either
+              import arrow.core.raise.either
+
+              fun test(): Either<String, Int> = either {
+                1
+              }
+              """
+          )
+        );
+    }
 }
