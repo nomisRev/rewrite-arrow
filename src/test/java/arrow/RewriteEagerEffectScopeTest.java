@@ -124,4 +124,28 @@ class RewriteEagerEffectScopeTest implements RewriteTest {
           )
         );
     }
+
+    @Test
+    void eagerEffectDSLRewrite() {
+        rewriteRun(
+          kotlin(
+            """
+              package com.yourorg
+                            
+              import arrow.core.continuations.EagerEffect
+              import arrow.core.continuations.eagerEffect
+
+              val x: EagerEffect<String, Int> = eagerEffect { 1 }
+              """,
+            """
+              package com.yourorg
+                            
+              import arrow.core.raise.EagerEffect
+              import arrow.core.raise.eagerEffect
+
+              val x: EagerEffect<String, Int> = eagerEffect { 1 }
+              """
+          )
+        );
+    }
 }

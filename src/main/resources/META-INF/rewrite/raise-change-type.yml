@@ -3,6 +3,14 @@ name: arrow.RaiseRefactor
 displayName: Refactor imports to Arrow Core Raise
 description: Migration file to refactor import from Arrow Core Continuations to Raise.
 recipeList:
+    - arrow.ChangeTopLevelFunction:
+        methodPattern: arrow.core.continuations.EffectKt effect
+        newMethodName: effect
+        newMethodImport: arrow.core.raise.effect
+    - arrow.ChangeTopLevelFunction:
+        methodPattern: arrow.core.continuations.EagerEffectKt eagerEffect
+        newMethodName: eagerEffect
+        newMethodImport: arrow.core.raise.eagerEffect
     - org.openrewrite.java.ChangeMethodName:
         methodPattern: arrow.core.continuations.EffectScope shift(*)
         newMethodName: raise
@@ -15,11 +23,10 @@ recipeList:
     - org.openrewrite.java.ChangeType:
         oldFullyQualifiedTypeName: arrow.core.continuations.EagerEffectScope
         newFullyQualifiedTypeName: arrow.core.raise.Raise
-    - arrow.RaiseAddImport
-    - arrow.ChangeTopLevelFunction:
-        methodPattern: arrow.core.ValidatedKt valid(*)
-        newMethodName: right
-        newMethodImport: arrow.core.right
     - org.openrewrite.java.ChangeType:
-        oldFullyQualifiedTypeName: arrow.core.Validated
-        newFullyQualifiedTypeName: arrow.core.Either
+          oldFullyQualifiedTypeName: arrow.core.continuations.Effect
+          newFullyQualifiedTypeName: arrow.core.raise.Effect
+    - org.openrewrite.java.ChangeType:
+          oldFullyQualifiedTypeName: arrow.core.continuations.EagerEffect
+          newFullyQualifiedTypeName: arrow.core.raise.EagerEffect
+    - arrow.RaiseAddImport

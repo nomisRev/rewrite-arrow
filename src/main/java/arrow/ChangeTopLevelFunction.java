@@ -3,9 +3,11 @@ package arrow;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.micrometer.core.lang.Nullable;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import org.openrewrite.*;
+import org.openrewrite.java.ChangeType;
 import org.openrewrite.java.MethodMatcher;
 import org.openrewrite.java.search.UsesMethod;
 import org.openrewrite.java.tree.J;
@@ -22,12 +24,13 @@ public class ChangeTopLevelFunction extends Recipe {
 
     @Option(displayName = "New Method pattern",
             description = "The method name that will replace the existing name.",
-            example =  "methodName(..)")
+            example = "methodName(..)")
     String newMethodName;
 
     @Option(displayName = "New Method Import",
             description = "The import for the new method name that will replace the existing name.",
-            example =  "my.package.methodName")
+            example = "my.package.methodName")
+    @Nullable
     String newMethodImport;
 
     @JsonCreator
@@ -68,16 +71,13 @@ public class ChangeTopLevelFunction extends Recipe {
             this.methodMatcher = methodMatcher;
         }
 
-        // TODO add import for new method
-        // TODO Remove import for old method
-
         @Override
         public J visitMethodInvocation(J.MethodInvocation method, ExecutionContext executionContext) {
             J.MethodInvocation m = (J.MethodInvocation) super.visitMethodInvocation(method, executionContext);
-            if (methodMatcher.matches(method) && !method.getSimpleName().equals(newMethodName)) {
+            if (methodMatcher.matches(method)) {
                 String importToRemove = m.getMethodType().getDeclaringType().getPackageName() + "." + m.getName().getSimpleName();
                 m = m.withName(m.getName().withSimpleName(newMethodName));
-                maybeAddImport(newMethodImport, null, false);
+                if (newMethodName != null) maybeAddImport(newMethodImport, null, false);
                 maybeRemoveImport(importToRemove);
             }
             return m;
