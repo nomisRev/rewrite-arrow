@@ -15,3 +15,6 @@ recipeList:
     - org.openrewrite.java.ChangeType:
         oldFullyQualifiedTypeName: arrow.core.continuations.EagerEffectScope
         newFullyQualifiedTypeName: arrow.core.raise.Raise
+    - arrow.ChangeObjectMethodToTopLevelFunction:
+        methodPattern: arrow.core.continuations.either eager(*)
+        newMethodName: arrow.core.raise.either

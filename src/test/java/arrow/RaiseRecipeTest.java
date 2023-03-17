@@ -176,4 +176,33 @@ class RaiseRecipeTest implements RewriteTest {
           )
         );
     }
+
+    @Test
+    void eitherEagerToEitherDSL() {
+        rewriteRun(
+          kotlin(
+            """
+              package com.yourorg
+                            
+              import arrow.core.Either
+              import arrow.core.continuations.either
+              import arrow.core.continuations.eager
+
+              fun test(): Either<String, Int> = either.eager {
+                1
+              }
+              """,
+            """
+              package com.yourorg
+                            
+              import arrow.core.Either
+              import arrow.core.raise.either
+
+              fun test(): Either<String, Int> = either {
+                1
+              }
+              """
+          )
+        );
+    }
 }
