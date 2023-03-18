@@ -124,4 +124,257 @@ class RewriteEagerEffectScopeTest implements RewriteTest {
           )
         );
     }
+
+    @Test
+    void eagerEffectDSLRewrite() {
+        rewriteRun(
+          kotlin(
+            """
+              package com.yourorg
+                            
+              import arrow.core.continuations.EagerEffect
+              import arrow.core.continuations.eagerEffect
+
+              val x: EagerEffect<String, Int> = eagerEffect { 1 }
+              """,
+            """
+              package com.yourorg
+                            
+              import arrow.core.raise.EagerEffect
+              import arrow.core.raise.eagerEffect
+
+              val x: EagerEffect<String, Int> = eagerEffect { 1 }
+              """
+          )
+        );
+    }
+
+    @Test
+    void eagerEffectAndEnsureDSLRewrite() {
+        rewriteRun(
+          kotlin(
+            """
+              package com.yourorg
+                            
+              import arrow.core.continuations.EagerEffect
+              import arrow.core.continuations.eagerEffect
+
+              val x: EagerEffect<String, Int> = eagerEffect {
+                ensure(false) { "failure" }
+                1
+              }
+              """,
+            """
+              package com.yourorg
+                            
+              import arrow.core.raise.EagerEffect
+              import arrow.core.raise.eagerEffect
+              import arrow.core.raise.ensure
+
+              val x: EagerEffect<String, Int> = eagerEffect {
+                ensure(false) { "failure" }
+                1
+              }
+              """
+          )
+        );
+    }
+
+    @Test
+    void eagerEffectFoldRewrite() {
+        rewriteRun(
+          kotlin(
+            """
+              package com.yourorg
+                            
+              import arrow.core.continuations.eagerEffect
+                            
+              suspend fun example() {
+                eagerEffect<String, Int> {
+                  1
+                }.fold(
+                  { 0 },
+                  { it }
+                )
+              }
+              """,
+            """
+              package com.yourorg
+                            
+              import arrow.core.raise.eagerEffect
+              import arrow.core.raise.fold
+                            
+              suspend fun example() {
+                eagerEffect<String, Int> {
+                  1
+                }.fold(
+                  { 0 },
+                  { it }
+                )
+              }
+              """
+          )
+        );
+    }
+
+    @Test
+    void eagerEffectThreeParamsFoldRewrite() {
+        rewriteRun(
+          kotlin(
+            """
+              package com.yourorg
+                            
+              import arrow.core.continuations.eagerEffect
+                            
+              suspend fun example() {
+                eagerEffect<String, Int> {
+                  1
+                }.fold(
+                  { throw it },
+                  { 0 },
+                  { it }
+                )
+              }
+              """,
+            """
+              package com.yourorg
+                            
+              import arrow.core.raise.eagerEffect
+              import arrow.core.raise.fold
+                            
+              suspend fun example() {
+                eagerEffect<String, Int> {
+                  1
+                }.fold(
+                  { throw it },
+                  { 0 },
+                  { it }
+                )
+              }
+              """
+          )
+        );
+    }
+
+    @Test
+    void toEither() {
+        rewriteRun(
+          kotlin(
+            """
+              package com.yourorg
+                            
+              import arrow.core.Either
+              import arrow.core.continuations.eagerEffect
+                            
+              fun example(): Either<String, Int> =
+                eagerEffect<String, Int> {
+                  1
+                }.toEither()
+              """,
+            """
+              package com.yourorg
+                            
+              import arrow.core.Either
+              import arrow.core.raise.eagerEffect
+              import arrow.core.raise.toEither
+                            
+              fun example(): Either<String, Int> =
+                eagerEffect<String, Int> {
+                  1
+                }.toEither()
+              """
+          )
+        );
+    }
+
+    @Test
+    void toIor() {
+        rewriteRun(
+          kotlin(
+            """
+              package com.yourorg
+                            
+              import arrow.core.Ior
+              import arrow.core.continuations.eagerEffect
+                            
+              fun example(): Ior<String, Int> =
+                eagerEffect<String, Int> {
+                  1
+                }.toIor()
+              """,
+            """
+              package com.yourorg
+                            
+              import arrow.core.Ior
+              import arrow.core.raise.eagerEffect
+              import arrow.core.raise.toIor
+                            
+              fun example(): Ior<String, Int> =
+                eagerEffect<String, Int> {
+                  1
+                }.toIor()
+              """
+          )
+        );
+    }
+
+    @Test
+    void toValidated() {
+        rewriteRun(
+          kotlin(
+            """
+              package com.yourorg
+                            
+              import arrow.core.Validated
+              import arrow.core.continuations.eagerEffect
+                            
+              fun example(): Validated<String, Int> =
+                eagerEffect<String, Int> {
+                  1
+                }.toValidated()
+              """,
+            """
+              package com.yourorg
+                            
+              import arrow.core.Validated
+              import arrow.core.raise.eagerEffect
+              import arrow.core.raise.toValidated
+                            
+              fun example(): Validated<String, Int> =
+                eagerEffect<String, Int> {
+                  1
+                }.toValidated()
+              """
+          )
+        );
+    }
+
+    @Test
+    void getOrNull() {
+        rewriteRun(
+          kotlin(
+            """
+              package com.yourorg
+                            
+              import arrow.core.continuations.eagerEffect
+                            
+              fun example(): Int? =
+                eagerEffect<String, Int> {
+                  1
+                }.orNull()
+              """,
+            """
+              package com.yourorg
+                            
+              import arrow.core.raise.eagerEffect
+              import arrow.core.raise.getOrNull
+                            
+              fun example(): Int? =
+                eagerEffect<String, Int> {
+                  1
+                }.getOrNull()
+              """
+          )
+        );
+    }
 }

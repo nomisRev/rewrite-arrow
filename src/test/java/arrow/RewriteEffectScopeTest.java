@@ -51,7 +51,7 @@ class RewriteEffectScopeTest implements RewriteTest {
     }
 
     @Test
-    void effectScopeReceiver() {
+    void effectScopeBody() {
         rewriteRun(
           kotlin(
             """
@@ -77,7 +77,7 @@ class RewriteEffectScopeTest implements RewriteTest {
     }
 
     @Test
-    void effectScopeReceiverExpression() {
+    void effectScopeExpression() {
         rewriteRun(
           kotlin(
             """
@@ -101,7 +101,7 @@ class RewriteEffectScopeTest implements RewriteTest {
     }
 
     @Test
-    void effectScopeEnsure() {
+    void ensureOnExtension() {
         rewriteRun(
           kotlin(
             """
@@ -120,6 +120,259 @@ class RewriteEffectScopeTest implements RewriteTest {
 
               suspend fun Raise<Int>.test(): Unit =
                 ensure(false) { -1 }
+              """
+          )
+        );
+    }
+
+    @Test
+    void effectBuilder() {
+        rewriteRun(
+          kotlin(
+            """
+              package com.yourorg
+                            
+              import arrow.core.continuations.Effect
+              import arrow.core.continuations.effect
+
+              val x: Effect<String, Int> = effect { 1 }
+              """,
+            """
+              package com.yourorg
+                            
+              import arrow.core.raise.Effect
+              import arrow.core.raise.effect
+
+              val x: Effect<String, Int> = effect { 1 }
+              """
+          )
+        );
+    }
+
+    @Test
+    void ensureDSL() {
+        rewriteRun(
+          kotlin(
+            """
+              package com.yourorg
+                            
+              import arrow.core.continuations.Effect
+              import arrow.core.continuations.effect
+
+              val x: Effect<String, Int> = effect {
+                ensure(false) { "failure" }
+                1
+              }
+              """,
+            """
+              package com.yourorg
+                            
+              import arrow.core.raise.Effect
+              import arrow.core.raise.effect
+              import arrow.core.raise.ensure
+
+              val x: Effect<String, Int> = effect {
+                ensure(false) { "failure" }
+                1
+              }
+              """
+          )
+        );
+    }
+
+    @Test
+    void fold() {
+        rewriteRun(
+          kotlin(
+            """
+              package com.yourorg
+                            
+              import arrow.core.continuations.effect
+                            
+              suspend fun example() {
+                effect<String, Int> {
+                  1
+                }.fold(
+                  { 0 },
+                  { it }
+                )
+              }
+              """,
+            """
+              package com.yourorg
+                            
+              import arrow.core.raise.effect
+              import arrow.core.raise.fold
+                            
+              suspend fun example() {
+                effect<String, Int> {
+                  1
+                }.fold(
+                  { 0 },
+                  { it }
+                )
+              }
+              """
+          )
+        );
+    }
+
+    @Test
+    void foldThreeParams() {
+        rewriteRun(
+          kotlin(
+            """
+              package com.yourorg
+                            
+              import arrow.core.continuations.effect
+                            
+              suspend fun example() {
+                effect<String, Int> {
+                  1
+                }.fold(
+                  { throw it },
+                  { 0 },
+                  { it }
+                )
+              }
+              """,
+            """
+              package com.yourorg
+                            
+              import arrow.core.raise.effect
+              import arrow.core.raise.fold
+                            
+              suspend fun example() {
+                effect<String, Int> {
+                  1
+                }.fold(
+                  { throw it },
+                  { 0 },
+                  { it }
+                )
+              }
+              """
+          )
+        );
+    }
+
+    @Test
+    void toEither() {
+        rewriteRun(
+          kotlin(
+            """
+              package com.yourorg
+                            
+              import arrow.core.Either
+              import arrow.core.continuations.effect
+                            
+              suspend fun example(): Either<String, Int> =
+                effect<String, Int> {
+                  1
+                }.toEither()
+              """,
+            """
+              package com.yourorg
+                            
+              import arrow.core.Either
+              import arrow.core.raise.effect
+              import arrow.core.raise.toEither
+                            
+              suspend fun example(): Either<String, Int> =
+                effect<String, Int> {
+                  1
+                }.toEither()
+              """
+          )
+        );
+    }
+
+    @Test
+    void toIor() {
+        rewriteRun(
+          kotlin(
+            """
+              package com.yourorg
+                            
+              import arrow.core.Ior
+              import arrow.core.continuations.effect
+                            
+              suspend fun example(): Ior<String, Int> =
+                effect<String, Int> {
+                  1
+                }.toIor()
+              """,
+            """
+              package com.yourorg
+                            
+              import arrow.core.Ior
+              import arrow.core.raise.effect
+              import arrow.core.raise.toIor
+                            
+              suspend fun example(): Ior<String, Int> =
+                effect<String, Int> {
+                  1
+                }.toIor()
+              """
+          )
+        );
+    }
+
+    @Test
+    void toValidated() {
+        rewriteRun(
+          kotlin(
+            """
+              package com.yourorg
+                            
+              import arrow.core.Validated
+              import arrow.core.continuations.effect
+                            
+              suspend fun example(): Validated<String, Int> =
+                effect<String, Int> {
+                  1
+                }.toValidated()
+              """,
+            """
+              package com.yourorg
+                            
+              import arrow.core.Validated
+              import arrow.core.raise.effect
+              import arrow.core.raise.toValidated
+                            
+              suspend fun example(): Validated<String, Int> =
+                effect<String, Int> {
+                  1
+                }.toValidated()
+              """
+          )
+        );
+    }
+
+    @Test
+    void getOrNull() {
+        rewriteRun(
+          kotlin(
+            """
+              package com.yourorg
+                            
+              import arrow.core.continuations.effect
+                            
+              suspend fun example(): Int? =
+                effect<String, Int> {
+                  1
+                }.orNull()
+              """,
+            """
+              package com.yourorg
+                            
+              import arrow.core.raise.effect
+              import arrow.core.raise.getOrNull
+                            
+              suspend fun example(): Int? =
+                effect<String, Int> {
+                  1
+                }.getOrNull()
               """
           )
         );
