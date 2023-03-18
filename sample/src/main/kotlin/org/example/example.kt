@@ -1,7 +1,15 @@
 package org.example
 
-import arrow.core.continuations.EffectScope
+import arrow.core.Either
+import arrow.core.continuations.Effect
+import arrow.core.continuations.either
+import arrow.core.continuations.effect
 
-suspend fun test(effect: EffectScope<String>): Int {
-  return effect.shift("failure")
+fun example2(): Either<String, Int> = either.eager {
+  ensure(false) { "failure" }
+  1
+}
+
+val x: Effect<String, Int> = effect {
+  3
 }

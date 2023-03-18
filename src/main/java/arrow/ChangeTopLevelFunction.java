@@ -11,6 +11,9 @@ import org.openrewrite.java.search.UsesMethod;
 import org.openrewrite.java.tree.J;
 import org.openrewrite.kotlin.KotlinIsoVisitor;
 
+/**
+ * Rewrites Kotlin's top level functions from one to another. This seems to not be supported by `ChangeMethodName`.
+ */
 @Value
 @EqualsAndHashCode(callSuper = true)
 public class ChangeTopLevelFunction extends Recipe {
@@ -72,7 +75,7 @@ public class ChangeTopLevelFunction extends Recipe {
         @Override
         public J visitMethodInvocation(J.MethodInvocation method, ExecutionContext executionContext) {
             J.MethodInvocation m = (J.MethodInvocation) super.visitMethodInvocation(method, executionContext);
-            if (methodMatcher.matches(method)) {
+            if (methodMatcher.matches(m)) {
                 String importToRemove = m.getMethodType().getDeclaringType().getPackageName() + "." + m.getName().getSimpleName();
                 m = m.withName(m.getName().withSimpleName(newMethodName));
                 if (newMethodName != null) {

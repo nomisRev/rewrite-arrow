@@ -8,7 +8,7 @@ import org.openrewrite.test.RewriteTest;
 
 import static org.openrewrite.kotlin.Assertions.kotlin;
 
-class RewriteEffectScopeTest implements RewriteTest {
+class EagerEffectScopeTest implements RewriteTest {
     @Override
     public void defaults(RecipeSpec spec) {
         spec.recipe(
@@ -25,15 +25,15 @@ class RewriteEffectScopeTest implements RewriteTest {
     }
 
     @Test
-    void effectScopeParameter() {
+    void eagerEffectScopeParameter() {
         rewriteRun(
           kotlin(
             """
               package com.yourorg
                             
-              import arrow.core.continuations.EffectScope
+              import arrow.core.continuations.EagerEffectScope
 
-              suspend fun test(scope: EffectScope<String>): Int {
+              fun test(scope: EagerEffectScope<String>): Int {
                 return scope.shift("failure")
               }
               """,
@@ -42,7 +42,7 @@ class RewriteEffectScopeTest implements RewriteTest {
                             
               import arrow.core.raise.Raise
 
-              suspend fun test(scope: Raise<String>): Int {
+              fun test(scope: Raise<String>): Int {
                 return scope.raise("failure")
               }
               """
@@ -51,15 +51,15 @@ class RewriteEffectScopeTest implements RewriteTest {
     }
 
     @Test
-    void effectScopeBody() {
+    void eagerEffectScopeReceiver() {
         rewriteRun(
           kotlin(
             """
               package com.yourorg
                             
-              import arrow.core.continuations.EffectScope
+              import arrow.core.continuations.EagerEffectScope
 
-              suspend fun EffectScope<String>.test(): Int {
+              fun EagerEffectScope<String>.test(): Int {
                 return shift("failure")
               }
               """,
@@ -68,7 +68,7 @@ class RewriteEffectScopeTest implements RewriteTest {
                             
               import arrow.core.raise.Raise
 
-              suspend fun Raise<String>.test(): Int {
+              fun Raise<String>.test(): Int {
                 return raise("failure")
               }
               """
@@ -77,15 +77,15 @@ class RewriteEffectScopeTest implements RewriteTest {
     }
 
     @Test
-    void effectScopeExpression() {
+    void eagerEffectScopeReceiverExpression() {
         rewriteRun(
           kotlin(
             """
               package com.yourorg
                             
-              import arrow.core.continuations.EffectScope
+              import arrow.core.continuations.EagerEffectScope
 
-              suspend fun EffectScope<String>.test(): Int =
+              fun EagerEffectScope<String>.test(): Int =
                 shift("failure")
               """,
             """
@@ -93,7 +93,7 @@ class RewriteEffectScopeTest implements RewriteTest {
                             
               import arrow.core.raise.Raise
 
-              suspend fun Raise<String>.test(): Int =
+              fun Raise<String>.test(): Int =
                 raise("failure")
               """
           )
@@ -101,15 +101,15 @@ class RewriteEffectScopeTest implements RewriteTest {
     }
 
     @Test
-    void ensureOnExtension() {
+    void eagerEffectScopeEnsure() {
         rewriteRun(
           kotlin(
             """
               package com.yourorg
                             
-              import arrow.core.continuations.EffectScope
+              import arrow.core.continuations.EagerEffectScope
 
-              suspend fun EffectScope<Int>.test(): Unit =
+              suspend fun EagerEffectScope<Int>.test(): Unit =
                 ensure(false) { -1 }
               """,
             """
@@ -126,40 +126,40 @@ class RewriteEffectScopeTest implements RewriteTest {
     }
 
     @Test
-    void effectBuilder() {
+    void eagerEffectDSLRewrite() {
         rewriteRun(
           kotlin(
             """
               package com.yourorg
                             
-              import arrow.core.continuations.Effect
-              import arrow.core.continuations.effect
+              import arrow.core.continuations.EagerEffect
+              import arrow.core.continuations.eagerEffect
 
-              val x: Effect<String, Int> = effect { 1 }
+              val x: EagerEffect<String, Int> = eagerEffect { 1 }
               """,
             """
               package com.yourorg
                             
-              import arrow.core.raise.Effect
-              import arrow.core.raise.effect
+              import arrow.core.raise.EagerEffect
+              import arrow.core.raise.eagerEffect
 
-              val x: Effect<String, Int> = effect { 1 }
+              val x: EagerEffect<String, Int> = eagerEffect { 1 }
               """
           )
         );
     }
 
     @Test
-    void ensureDSL() {
+    void eagerEffectAndEnsureDSLRewrite() {
         rewriteRun(
           kotlin(
             """
               package com.yourorg
                             
-              import arrow.core.continuations.Effect
-              import arrow.core.continuations.effect
+              import arrow.core.continuations.EagerEffect
+              import arrow.core.continuations.eagerEffect
 
-              val x: Effect<String, Int> = effect {
+              val x: EagerEffect<String, Int> = eagerEffect {
                 ensure(false) { "failure" }
                 1
               }
@@ -167,11 +167,11 @@ class RewriteEffectScopeTest implements RewriteTest {
             """
               package com.yourorg
                             
-              import arrow.core.raise.Effect
-              import arrow.core.raise.effect
+              import arrow.core.raise.EagerEffect
+              import arrow.core.raise.eagerEffect
               import arrow.core.raise.ensure
 
-              val x: Effect<String, Int> = effect {
+              val x: EagerEffect<String, Int> = eagerEffect {
                 ensure(false) { "failure" }
                 1
               }
@@ -181,16 +181,16 @@ class RewriteEffectScopeTest implements RewriteTest {
     }
 
     @Test
-    void fold() {
+    void eagerEffectFoldRewrite() {
         rewriteRun(
           kotlin(
             """
               package com.yourorg
                             
-              import arrow.core.continuations.effect
+              import arrow.core.continuations.eagerEffect
                             
               suspend fun example() {
-                effect<String, Int> {
+                eagerEffect<String, Int> {
                   1
                 }.fold(
                   { 0 },
@@ -201,11 +201,11 @@ class RewriteEffectScopeTest implements RewriteTest {
             """
               package com.yourorg
                             
-              import arrow.core.raise.effect
+              import arrow.core.raise.eagerEffect
               import arrow.core.raise.fold
                             
               suspend fun example() {
-                effect<String, Int> {
+                eagerEffect<String, Int> {
                   1
                 }.fold(
                   { 0 },
@@ -218,16 +218,16 @@ class RewriteEffectScopeTest implements RewriteTest {
     }
 
     @Test
-    void foldThreeParams() {
+    void eagerEffectThreeParamsFoldRewrite() {
         rewriteRun(
           kotlin(
             """
               package com.yourorg
                             
-              import arrow.core.continuations.effect
+              import arrow.core.continuations.eagerEffect
                             
               suspend fun example() {
-                effect<String, Int> {
+                eagerEffect<String, Int> {
                   1
                 }.fold(
                   { throw it },
@@ -239,11 +239,11 @@ class RewriteEffectScopeTest implements RewriteTest {
             """
               package com.yourorg
                             
-              import arrow.core.raise.effect
+              import arrow.core.raise.eagerEffect
               import arrow.core.raise.fold
                             
               suspend fun example() {
-                effect<String, Int> {
+                eagerEffect<String, Int> {
                   1
                 }.fold(
                   { throw it },
@@ -264,10 +264,10 @@ class RewriteEffectScopeTest implements RewriteTest {
               package com.yourorg
                             
               import arrow.core.Either
-              import arrow.core.continuations.effect
+              import arrow.core.continuations.eagerEffect
                             
-              suspend fun example(): Either<String, Int> =
-                effect<String, Int> {
+              fun example(): Either<String, Int> =
+                eagerEffect<String, Int> {
                   1
                 }.toEither()
               """,
@@ -275,11 +275,11 @@ class RewriteEffectScopeTest implements RewriteTest {
               package com.yourorg
                             
               import arrow.core.Either
-              import arrow.core.raise.effect
+              import arrow.core.raise.eagerEffect
               import arrow.core.raise.toEither
                             
-              suspend fun example(): Either<String, Int> =
-                effect<String, Int> {
+              fun example(): Either<String, Int> =
+                eagerEffect<String, Int> {
                   1
                 }.toEither()
               """
@@ -295,10 +295,10 @@ class RewriteEffectScopeTest implements RewriteTest {
               package com.yourorg
                             
               import arrow.core.Ior
-              import arrow.core.continuations.effect
+              import arrow.core.continuations.eagerEffect
                             
-              suspend fun example(): Ior<String, Int> =
-                effect<String, Int> {
+              fun example(): Ior<String, Int> =
+                eagerEffect<String, Int> {
                   1
                 }.toIor()
               """,
@@ -306,11 +306,11 @@ class RewriteEffectScopeTest implements RewriteTest {
               package com.yourorg
                             
               import arrow.core.Ior
-              import arrow.core.raise.effect
+              import arrow.core.raise.eagerEffect
               import arrow.core.raise.toIor
                             
-              suspend fun example(): Ior<String, Int> =
-                effect<String, Int> {
+              fun example(): Ior<String, Int> =
+                eagerEffect<String, Int> {
                   1
                 }.toIor()
               """
@@ -326,10 +326,10 @@ class RewriteEffectScopeTest implements RewriteTest {
               package com.yourorg
                             
               import arrow.core.Validated
-              import arrow.core.continuations.effect
+              import arrow.core.continuations.eagerEffect
                             
-              suspend fun example(): Validated<String, Int> =
-                effect<String, Int> {
+              fun example(): Validated<String, Int> =
+                eagerEffect<String, Int> {
                   1
                 }.toValidated()
               """,
@@ -337,11 +337,11 @@ class RewriteEffectScopeTest implements RewriteTest {
               package com.yourorg
                             
               import arrow.core.Validated
-              import arrow.core.raise.effect
+              import arrow.core.raise.eagerEffect
               import arrow.core.raise.toValidated
                             
-              suspend fun example(): Validated<String, Int> =
-                effect<String, Int> {
+              fun example(): Validated<String, Int> =
+                eagerEffect<String, Int> {
                   1
                 }.toValidated()
               """
@@ -356,21 +356,21 @@ class RewriteEffectScopeTest implements RewriteTest {
             """
               package com.yourorg
                             
-              import arrow.core.continuations.effect
+              import arrow.core.continuations.eagerEffect
                             
-              suspend fun example(): Int? =
-                effect<String, Int> {
+              fun example(): Int? =
+                eagerEffect<String, Int> {
                   1
                 }.orNull()
               """,
             """
               package com.yourorg
                             
-              import arrow.core.raise.effect
+              import arrow.core.raise.eagerEffect
               import arrow.core.raise.getOrNull
                             
-              suspend fun example(): Int? =
-                effect<String, Int> {
+              fun example(): Int? =
+                eagerEffect<String, Int> {
                   1
                 }.getOrNull()
               """

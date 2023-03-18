@@ -4,19 +4,19 @@ displayName: Refactor Arrow Core Validated to Either
 description: Migration file to refactor from Validated to Either
 recipeList:
     - arrow.ChangeTopLevelFunction:
-        methodPattern: arrow.core.ValidatedKt valid(*)
+        methodPattern: arrow.core.ValidatedKt valid()
         newMethodName: right
         newMethodImport: arrow.core.right
     - arrow.ChangeTopLevelFunction:
-          methodPattern: arrow.core.ValidatedKt validNel(*)
+          methodPattern: arrow.core.ValidatedKt validNel()
           newMethodName: right
           newMethodImport: arrow.core.right
     - arrow.ChangeTopLevelFunction:
-          methodPattern: arrow.core.ValidatedKt invalid(*)
+          methodPattern: arrow.core.ValidatedKt invalid()
           newMethodName: left
           newMethodImport: arrow.core.left
     - arrow.ChangeTopLevelFunction:
-          methodPattern: arrow.core.ValidatedKt invalidNel(*)
+          methodPattern: arrow.core.ValidatedKt invalidNel()
           newMethodName: leftNel
           newMethodImport: arrow.core.leftNel
     - org.openrewrite.java.ChangeType:

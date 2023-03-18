@@ -4,7 +4,7 @@ displayName: Refactor imports to Arrow Core Raise
 description: Migration file to refactor import from Arrow Core Continuations to Raise.
 recipeList:
     - arrow.ChangeTopLevelFunction:
-        methodPattern: arrow.core.continuations.EffectKt effect
+        methodPattern: arrow.core.continuations.EffectKt effect(..)
         newMethodName: effect
         newMethodImport: arrow.core.raise.effect
     - org.openrewrite.java.ChangeMethodName:
@@ -18,7 +18,7 @@ recipeList:
         newFullyQualifiedTypeName: arrow.core.raise.Effect
 
     - arrow.ChangeTopLevelFunction:
-        methodPattern: arrow.core.continuations.EagerEffectKt eagerEffect
+        methodPattern: arrow.core.continuations.EagerEffectKt eagerEffect(..)
         newMethodName: eagerEffect
         newMethodImport: arrow.core.raise.eagerEffect
     - org.openrewrite.java.ChangeMethodName:
@@ -48,3 +48,4 @@ recipeList:
         methodPattern: orNull()
         newMethodName: getOrNull
         methodImport: arrow.core.raise.getOrNull
+    - arrow.RewriteEffectDSL
