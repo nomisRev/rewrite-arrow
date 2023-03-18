@@ -2,46 +2,54 @@ package arrow;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.micrometer.core.lang.Nullable;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import org.openrewrite.*;
 import org.openrewrite.java.MethodMatcher;
 import org.openrewrite.java.search.UsesMethod;
 import org.openrewrite.java.tree.J;
-import org.openrewrite.java.tree.JavaType;
 import org.openrewrite.kotlin.KotlinIsoVisitor;
 
 @Value
 @EqualsAndHashCode(callSuper = true)
-public class ChangeObjectMethodToTopLevelFunction extends Recipe {
+public class ChangeTopLevelFunction extends Recipe {
 
     @Option(displayName = "Method pattern",
             description = "A method pattern that is used to find matching method declarations/invocations.",
             example = "my.package.ObjectName methodName(..)")
     String methodPattern;
 
-    @Option(displayName = "New method name fully qualified import",
+    @Option(displayName = "New Method pattern",
             description = "The method name that will replace the existing name.",
-            example = "my.new.package.newMethodName(..)")
+            example = "methodName(..)")
     String newMethodName;
 
+    @Option(displayName = "New Method Import",
+            description = "The import for the new method name that will replace the existing name.",
+            example = "my.package.methodName")
+    @Nullable
+    String newMethodImport;
+
     @JsonCreator
-    public ChangeObjectMethodToTopLevelFunction(
+    public ChangeTopLevelFunction(
             @JsonProperty("methodPattern") String methodPattern,
-            @JsonProperty("newMethodName") String newMethodName
+            @JsonProperty("newMethodPattern") String newMethodName,
+            @JsonProperty("newMethodImport") String newMethodImport
     ) {
         this.methodPattern = methodPattern;
         this.newMethodName = newMethodName;
+        this.newMethodImport = newMethodImport;
     }
 
     @Override
     public String getDisplayName() {
-        return "Raise Rewrite";
+        return "Rewrite top level function";
     }
 
     @Override
     public String getDescription() {
-        return "Rewrites Kotlin's object method invocations to top level functions.";
+        return "Rewrites Kotlin's top level functions from one to another.";
     }
 
     @Override
@@ -51,28 +59,26 @@ public class ChangeObjectMethodToTopLevelFunction extends Recipe {
 
     @Override
     protected TreeVisitor<?, ExecutionContext> getVisitor() {
-        return new ChangeObjectMethodToTopLevelFunctionVisitor(new MethodMatcher(methodPattern));
+        return new ChangeTopLevelFunctionVisitor(new MethodMatcher(methodPattern));
     }
 
-    public class ChangeObjectMethodToTopLevelFunctionVisitor extends KotlinIsoVisitor<ExecutionContext> {
+    private class ChangeTopLevelFunctionVisitor extends KotlinIsoVisitor<ExecutionContext> {
         private final MethodMatcher methodMatcher;
 
-        private ChangeObjectMethodToTopLevelFunctionVisitor(MethodMatcher methodMatcher) {
+        private ChangeTopLevelFunctionVisitor(MethodMatcher methodMatcher) {
             this.methodMatcher = methodMatcher;
         }
-
-        // TODO add import for new method
-        // TODO Remove import for old method
 
         @Override
         public J visitMethodInvocation(J.MethodInvocation method, ExecutionContext executionContext) {
             J.MethodInvocation m = (J.MethodInvocation) super.visitMethodInvocation(method, executionContext);
-            if (methodMatcher.matches(method) && !method.getSimpleName().equals(newMethodName)) {
-                m = m
-                         // TODO remove declaring type
-//                        .withDeclaringType(JavaType.ShallowClass.build("arrow.core.RaiseKt"))
-                        .withDeclaringType(JavaType.ShallowClass.build("arrow.core.RaiseKt"))
-                        .withName(m.getName().withSimpleName(newMethodName));
+            if (methodMatcher.matches(method)) {
+                String importToRemove = m.getMethodType().getDeclaringType().getPackageName() + "." + m.getName().getSimpleName();
+                m = m.withName(m.getName().withSimpleName(newMethodName));
+                if (newMethodName != null) {
+                    maybeAddImport(newMethodImport, null, false);
+                }
+                maybeRemoveImport(importToRemove);
             }
             return m;
         }
