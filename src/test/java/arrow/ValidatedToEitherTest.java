@@ -100,6 +100,31 @@ class ValidatedToEitherTest implements RewriteTest {
     }
 
     @Test
+    @Disabled("TypeAlias refactor not working")
+    void rewriteAlias() {
+        rewriteRun(
+          kotlin(
+            """
+              package com.yourorg
+
+              import arrow.core.ValidatedNel
+              import arrow.core.invalidNel
+
+              val x: ValidatedNel<String>, Int> = "failure".invalidNel()
+              """,
+            """
+              package com.yourorg
+
+              import arrow.core.EitherNel
+              import arrow.core.leftNel
+
+              val x: EitherNel<String>, Int> = "failure".leftNel()
+              """
+          )
+        );
+    }
+
+    @Test
     @Disabled("Not yet implemented")
     void rewriteZipToZipOrAccumulate() {
         rewriteRun(

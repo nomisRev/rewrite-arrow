@@ -20,8 +20,5 @@ recipeList:
           newMethodName: leftNel
           newMethodImport: arrow.core.leftNel
     - org.openrewrite.java.ChangeType:
-        oldFullyQualifiedTypeName: arrow.core.ValidatedNel
-        newFullyQualifiedTypeName: arrow.core.Either
-    - org.openrewrite.java.ChangeType:
         oldFullyQualifiedTypeName: arrow.core.Validated
         newFullyQualifiedTypeName: arrow.core.Either
