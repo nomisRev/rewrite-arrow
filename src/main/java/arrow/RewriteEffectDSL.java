@@ -81,20 +81,27 @@ public class RewriteEffectDSL extends Recipe {
         @Override
         public J visitMethodInvocation(J.MethodInvocation method, ExecutionContext executionContext) {
             J.MethodInvocation m = (J.MethodInvocation) super.visitMethodInvocation(method, executionContext);
-            boolean implicit = implicitInvoke.matches(method);
-            boolean matches = eager.matches(method) || implicit || invoke.matches(method);
+            boolean implicit = implicitInvoke.matches(m);
+            boolean matches = eager.matches(m) || implicit || invoke.matches(m);
 
             if (matches) {
-                // Rename the method to the top-level object name.
+                /* Rename the method to the top-level object name.
+                 * `eager`, `invoke` -> `either`
+                 *
+                 * If we encounter an implicit invoke call,
+                 * the method name is assigned the name of the object, so we end up with: either.either {
+                 * In that case we need to remove the receiver (select).
+                 */
                 m = m.withName(m.getName().withSimpleName(dslName));
 
-                // For an implicit `invoke` call, we need to remove the receiver.
                 if (!implicit) {
                     m = m.withSelect(null);
                 }
 
-                String topLevelImport = "arrow.core.raise." + dslName;
-                maybeAddImport(topLevelImport, null, false);
+                // Add the import to the top-level DSL function.
+                maybeAddImport("arrow.core.raise." + dslName, null, false);
+
+                // Remove the import to the object & the eager method.
                 maybeRemoveImport(fullyQualifiedObject);
                 maybeRemoveImport(oldPackage + "eager");
             }

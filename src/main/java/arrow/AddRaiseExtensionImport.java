@@ -11,7 +11,8 @@ import org.openrewrite.java.tree.J;
 import org.openrewrite.kotlin.KotlinIsoVisitor;
 
 /**
- * Adds an import for a method of `Effect` and `EffectScope` that is now an extension function on `Raise`.
+ * Previously `Effect` and `EagerEffect` were interfaces, and now they are type aliases for `Raise` based lambdas.
+ * As a result of this change, the all methods became extension functions on `Raise` and thus require an import.
  */
 @Value
 @EqualsAndHashCode(callSuper = true)
@@ -75,9 +76,12 @@ public class AddRaiseExtensionImport extends Recipe {
         public J.MethodInvocation visitMethodInvocation(J.MethodInvocation method, ExecutionContext executionContext) {
             J.MethodInvocation m = (J.MethodInvocation) super.visitMethodInvocation(method, executionContext);
             if (foldEffectMatcher.matches(m) || foldEagerEffectMatcher.matches(m)) {
+                // Rename method if name changed (orNull -> getOrNull)
                 if (newMethodName != null) {
                     m = m.withName(m.getName().withSimpleName(newMethodName));
                 }
+
+                // Add import for raise that previously was a method on Effect/EagerEffect
                 maybeAddImport(methodImport, false);
             }
             return m;
