@@ -8,16 +8,19 @@ import org.openrewrite.ExecutionContext;
 import org.openrewrite.Recipe;
 import org.openrewrite.TreeVisitor;
 import org.openrewrite.java.MethodMatcher;
-import org.openrewrite.java.search.UsesMethod;
 import org.openrewrite.java.search.UsesType;
 import org.openrewrite.java.tree.J;
 import org.openrewrite.kotlin.KotlinIsoVisitor;
 
+/**
+ * Add an import for a DSL function of `EffectScope` and `EagerEffectScope` that is now an extension function on `Raise`.
+ * Currently, this is only `ensure` so we have a single recipe for it.
+ */
 @Value
 @EqualsAndHashCode(callSuper = true)
-public class RaiseAddImport extends Recipe {
+public class RaiseEnsureImport extends Recipe {
     @JsonCreator
-    public RaiseAddImport() {
+    public RaiseEnsureImport() {
     }
 
     @Override

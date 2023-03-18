@@ -255,4 +255,97 @@ class RewriteEagerEffectScopeTest implements RewriteTest {
           )
         );
     }
+
+    @Test
+    void toEither() {
+        rewriteRun(
+          kotlin(
+            """
+              package com.yourorg
+                            
+              import arrow.core.Either
+              import arrow.core.continuations.eagerEffect
+                            
+              fun example(): Either<String, Int> =
+                eagerEffect<String, Int> {
+                  1
+                }.toEither()
+              """,
+            """
+              package com.yourorg
+                            
+              import arrow.core.Either
+              import arrow.core.raise.eagerEffect
+              import arrow.core.raise.toEither
+                            
+              fun example(): Either<String, Int> =
+                eagerEffect<String, Int> {
+                  1
+                }.toEither()
+              """
+          )
+        );
+    }
+
+    @Test
+    void toIor() {
+        rewriteRun(
+          kotlin(
+            """
+              package com.yourorg
+                            
+              import arrow.core.Ior
+              import arrow.core.continuations.eagerEffect
+                            
+              fun example(): Ior<String, Int> =
+                eagerEffect<String, Int> {
+                  1
+                }.toIor()
+              """,
+            """
+              package com.yourorg
+                            
+              import arrow.core.Ior
+              import arrow.core.raise.eagerEffect
+              import arrow.core.raise.toIor
+                            
+              fun example(): Ior<String, Int> =
+                eagerEffect<String, Int> {
+                  1
+                }.toIor()
+              """
+          )
+        );
+    }
+
+    @Test
+    void toValidated() {
+        rewriteRun(
+          kotlin(
+            """
+              package com.yourorg
+                            
+              import arrow.core.Validated
+              import arrow.core.continuations.eagerEffect
+                            
+              fun example(): Validated<String, Int> =
+                eagerEffect<String, Int> {
+                  1
+                }.toValidated()
+              """,
+            """
+              package com.yourorg
+                            
+              import arrow.core.Validated
+              import arrow.core.raise.eagerEffect
+              import arrow.core.raise.toValidated
+                            
+              fun example(): Validated<String, Int> =
+                eagerEffect<String, Int> {
+                  1
+                }.toValidated()
+              """
+          )
+        );
+    }
 }

@@ -51,7 +51,7 @@ class RewriteEffectScopeTest implements RewriteTest {
     }
 
     @Test
-    void effectScopeReceiver() {
+    void effectScopeBody() {
         rewriteRun(
           kotlin(
             """
@@ -77,7 +77,7 @@ class RewriteEffectScopeTest implements RewriteTest {
     }
 
     @Test
-    void effectScopeReceiverExpression() {
+    void effectScopeExpression() {
         rewriteRun(
           kotlin(
             """
@@ -101,7 +101,7 @@ class RewriteEffectScopeTest implements RewriteTest {
     }
 
     @Test
-    void effectScopeEnsure() {
+    void ensureOnExtension() {
         rewriteRun(
           kotlin(
             """
@@ -126,7 +126,7 @@ class RewriteEffectScopeTest implements RewriteTest {
     }
 
     @Test
-    void effectDSLRewrite() {
+    void effectBuilder() {
         rewriteRun(
           kotlin(
             """
@@ -150,7 +150,7 @@ class RewriteEffectScopeTest implements RewriteTest {
     }
 
     @Test
-    void effectAndEnsureDSLRewrite() {
+    void ensureDSL() {
         rewriteRun(
           kotlin(
             """
@@ -181,7 +181,7 @@ class RewriteEffectScopeTest implements RewriteTest {
     }
 
     @Test
-    void effectFoldRewrite() {
+    void fold() {
         rewriteRun(
           kotlin(
             """
@@ -218,7 +218,7 @@ class RewriteEffectScopeTest implements RewriteTest {
     }
 
     @Test
-    void effectFoldThreeParamsRewrite() {
+    void foldThreeParams() {
         rewriteRun(
           kotlin(
             """
@@ -251,6 +251,99 @@ class RewriteEffectScopeTest implements RewriteTest {
                   { it }
                 )
               }
+              """
+          )
+        );
+    }
+
+    @Test
+    void toEither() {
+        rewriteRun(
+          kotlin(
+            """
+              package com.yourorg
+                            
+              import arrow.core.Either
+              import arrow.core.continuations.effect
+                            
+              suspend fun example(): Either<String, Int> =
+                effect<String, Int> {
+                  1
+                }.toEither()
+              """,
+            """
+              package com.yourorg
+                            
+              import arrow.core.Either
+              import arrow.core.raise.effect
+              import arrow.core.raise.toEither
+                            
+              suspend fun example(): Either<String, Int> =
+                effect<String, Int> {
+                  1
+                }.toEither()
+              """
+          )
+        );
+    }
+
+    @Test
+    void toIor() {
+        rewriteRun(
+          kotlin(
+            """
+              package com.yourorg
+                            
+              import arrow.core.Ior
+              import arrow.core.continuations.effect
+                            
+              suspend fun example(): Ior<String, Int> =
+                effect<String, Int> {
+                  1
+                }.toIor()
+              """,
+            """
+              package com.yourorg
+                            
+              import arrow.core.Ior
+              import arrow.core.raise.effect
+              import arrow.core.raise.toIor
+                            
+              suspend fun example(): Ior<String, Int> =
+                effect<String, Int> {
+                  1
+                }.toIor()
+              """
+          )
+        );
+    }
+
+    @Test
+    void toValidated() {
+        rewriteRun(
+          kotlin(
+            """
+              package com.yourorg
+                            
+              import arrow.core.Validated
+              import arrow.core.continuations.effect
+                            
+              suspend fun example(): Validated<String, Int> =
+                effect<String, Int> {
+                  1
+                }.toValidated()
+              """,
+            """
+              package com.yourorg
+                            
+              import arrow.core.Validated
+              import arrow.core.raise.effect
+              import arrow.core.raise.toValidated
+                            
+              suspend fun example(): Validated<String, Int> =
+                effect<String, Int> {
+                  1
+                }.toValidated()
               """
           )
         );
