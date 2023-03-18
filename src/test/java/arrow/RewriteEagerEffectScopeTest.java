@@ -348,4 +348,33 @@ class RewriteEagerEffectScopeTest implements RewriteTest {
           )
         );
     }
+
+    @Test
+    void getOrNull() {
+        rewriteRun(
+          kotlin(
+            """
+              package com.yourorg
+                            
+              import arrow.core.continuations.eagerEffect
+                            
+              fun example(): Int? =
+                eagerEffect<String, Int> {
+                  1
+                }.orNull()
+              """,
+            """
+              package com.yourorg
+                            
+              import arrow.core.raise.eagerEffect
+              import arrow.core.raise.getOrNull
+                            
+              fun example(): Int? =
+                eagerEffect<String, Int> {
+                  1
+                }.getOrNull()
+              """
+          )
+        );
+    }
 }

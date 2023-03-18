@@ -348,4 +348,33 @@ class RewriteEffectScopeTest implements RewriteTest {
           )
         );
     }
+
+    @Test
+    void getOrNull() {
+        rewriteRun(
+          kotlin(
+            """
+              package com.yourorg
+                            
+              import arrow.core.continuations.effect
+                            
+              suspend fun example(): Int? =
+                effect<String, Int> {
+                  1
+                }.orNull()
+              """,
+            """
+              package com.yourorg
+                            
+              import arrow.core.raise.effect
+              import arrow.core.raise.getOrNull
+                            
+              suspend fun example(): Int? =
+                effect<String, Int> {
+                  1
+                }.getOrNull()
+              """
+          )
+        );
+    }
 }

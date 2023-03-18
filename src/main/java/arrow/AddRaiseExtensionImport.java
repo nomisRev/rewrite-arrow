@@ -1,6 +1,7 @@
 package arrow;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.micrometer.core.lang.Nullable;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import org.openrewrite.*;
@@ -24,6 +25,12 @@ public class AddRaiseExtensionImport extends Recipe {
             example = "methodName(..)")
     String methodPattern;
 
+    @Option(displayName = "New Method Name",
+            description = "The name of the method that will replace the existing name.",
+            example = "methodName")
+    @Nullable
+    String newMethodName;
+
     @Option(displayName = "New Method Import",
             description = "The import for the new method name that will replace the existing name.",
             example = "my.package.methodName")
@@ -31,8 +38,10 @@ public class AddRaiseExtensionImport extends Recipe {
 
     public AddRaiseExtensionImport(
             @JsonProperty("methodPattern") String methodPattern,
+            @JsonProperty("methodName") String newMethodName,
             @JsonProperty("methodImport") String methodImport) {
         this.methodPattern = methodPattern;
+        this.newMethodName = newMethodName;
         this.methodImport = methodImport;
         this.foldPattern = "arrow.core.continuations.Effect " + methodPattern;
         this.eagerFoldPattern = "arrow.core.continuations.EagerEffect " + methodPattern;
@@ -66,6 +75,9 @@ public class AddRaiseExtensionImport extends Recipe {
         public J.MethodInvocation visitMethodInvocation(J.MethodInvocation method, ExecutionContext executionContext) {
             J.MethodInvocation m = (J.MethodInvocation) super.visitMethodInvocation(method, executionContext);
             if (foldEffectMatcher.matches(m) || foldEagerEffectMatcher.matches(m)) {
+                if (newMethodName != null) {
+                    m = m.withName(m.getName().withSimpleName(newMethodName));
+                }
                 maybeAddImport(methodImport, false);
             }
             return m;

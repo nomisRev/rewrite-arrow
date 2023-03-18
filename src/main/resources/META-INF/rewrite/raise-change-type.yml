@@ -44,3 +44,7 @@ recipeList:
     - arrow.AddRaiseExtensionImport:
           methodPattern: toValidated()
           methodImport: arrow.core.raise.toValidated
+    - arrow.AddRaiseExtensionImport:
+        methodPattern: orNull()
+        newMethodName: getOrNull
+        methodImport: arrow.core.raise.getOrNull
