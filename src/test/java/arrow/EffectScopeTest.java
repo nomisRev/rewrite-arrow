@@ -1,5 +1,6 @@
 package arrow;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openrewrite.config.Environment;
 import org.openrewrite.kotlin.KotlinParser;
@@ -373,6 +374,49 @@ class EffectScopeTest implements RewriteTest {
                 effect<String, Int> {
                   1
                 }.getOrNull()
+              """
+          )
+        );
+    }
+
+    @Test
+    @Disabled("When parsing and printing the source code back to text without modifications, the printed source didn't match the original source code. This means there is a bug in the parser implementation itself. Please open an issue to report this, providing a sample of the code that generated this error!")
+    void multiple() {
+        rewriteRun(
+          kotlin(
+            """
+              package com.yourorg
+                            
+              import arrow.core.Either
+              import arrow.core.continuations.Effect
+              import arrow.core.continuations.either
+              import arrow.core.continuations.effect
+              
+              fun example2(): Either<String, Int> = either.eager {
+                ensure(false) { "failure" }
+                1
+              }
+              
+              val x: Effect<String, Int> = effect {
+                3
+              }
+              """,
+            """
+              package com.yourorg
+                            
+              import arrow.core.Either
+              import arrow.core.raise.Effect
+              import arrow.core.continuations.either
+              import arrow.core.raise.effect
+              
+              fun example2(): Either<String, Int> = either.eager {
+                ensure(false) { "failure" }
+                1
+              }
+              
+              val x: Effect<String, Int> = effect {
+                3
+              }
               """
           )
         );
