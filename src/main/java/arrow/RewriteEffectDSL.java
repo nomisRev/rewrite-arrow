@@ -10,6 +10,33 @@ import org.openrewrite.kotlin.KotlinIsoVisitor;
 
 /**
  * Rewrite object method invocations to top level functions.
+ * <p>
+ * Library code:
+ * ```kotlin
+ * package arrow.core.continuations
+ * <p>
+ * public object either {
+ *   public inline fun <E, A> eager(noinline f: suspend EagerEffectScope<E>.() -> A): Either<E, A> =
+ *     eagerEffect(f).toEither()
+ * <p>
+ *   public suspend operator fun <E, A> invoke(f: suspend EffectScope<E>.() -> A): Either<E, A> =
+ *     effect(f).toEither()
+ * }
+ * ```
+ * <p>
+ * needs to be rewritten to:
+ * <p>
+ * ```kotlin
+ * package arrow.core.raise
+ * <p>
+ * public inline fun <E, A> either(@BuilderInference block: Raise<E>.() -> A): Either<E, A> =
+ *   fold({ block.invoke(this) }, { Either.Left(it) }, { Either.Right(it) })
+ * ```
+ * <p>
+ * So we need to rewrite:
+ *  - `arrow.core.continuations.either eager(..)` to `arrow.core.raise either(..)`
+ *  - `arrow.core.continuations.either invoke(..)` to `either(..)`
+ *  - `arrow.core.continuations.either either(..)` to `either(..)`
  */
 @Value
 @EqualsAndHashCode(callSuper = true)
@@ -58,8 +85,10 @@ public class RewriteEffectDSL extends Recipe {
             boolean matches = eager.matches(method) || implicit || invoke.matches(method);
 
             if (matches) {
+                // Rename the method to the top-level object name.
                 m = m.withName(m.getName().withSimpleName(dslName));
 
+                // For an implicit `invoke` call, we need to remove the receiver.
                 if (!implicit) {
                     m = m.withSelect(null);
                 }
