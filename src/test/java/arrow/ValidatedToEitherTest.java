@@ -41,6 +41,7 @@ class ValidatedToEitherTest implements RewriteTest {
               package com.yourorg
                             
               import arrow.core.Either
+              
               import arrow.core.right
 
               val x: Either<String, Int> = 1.right()
@@ -57,6 +58,7 @@ class ValidatedToEitherTest implements RewriteTest {
               package com.yourorg
                             
               import arrow.core.Validated
+              
               import arrow.core.invalid
 
               val x: Validated<String, Int> = "failure".invalid()
@@ -65,6 +67,7 @@ class ValidatedToEitherTest implements RewriteTest {
               package com.yourorg
                             
               import arrow.core.Either
+              
               import arrow.core.left
 
               val x: Either<String, Int> = "failure".left()
@@ -82,18 +85,22 @@ class ValidatedToEitherTest implements RewriteTest {
 
               import arrow.core.NonEmptyList
               import arrow.core.Validated
+              
               import arrow.core.invalidNel
 
               val x: Validated<NonEmptyList<String>, Int> = "failure".invalidNel()
+              val y: Validated<NonEmptyList<String>, Int> = "failure".invalidNel()
               """,
             """
               package com.yourorg
 
               import arrow.core.Either
               import arrow.core.NonEmptyList
+              
               import arrow.core.leftNel
 
               val x: Either<NonEmptyList<String>, Int> = "failure".leftNel()
+              val y: Either<NonEmptyList<String>, Int> = "failure".leftNel()
               """
           )
         );
@@ -108,16 +115,20 @@ class ValidatedToEitherTest implements RewriteTest {
               package com.yourorg
 
               import arrow.core.ValidatedNel
+              
               import arrow.core.invalidNel
 
+              val x: ValidatedNel<String>, Int> = "failure".invalidNel()
               val x: ValidatedNel<String>, Int> = "failure".invalidNel()
               """,
             """
               package com.yourorg
 
               import arrow.core.EitherNel
+              
               import arrow.core.leftNel
 
+              val x: EitherNel<String>, Int> = "failure".leftNel()
               val x: EitherNel<String>, Int> = "failure".leftNel()
               """
           )
@@ -125,7 +136,6 @@ class ValidatedToEitherTest implements RewriteTest {
     }
 
     @Test
-    @Disabled("Not yet implemented")
     void rewriteZipToZipOrAccumulate() {
         rewriteRun(
           kotlin(
@@ -134,8 +144,9 @@ class ValidatedToEitherTest implements RewriteTest {
 
               import arrow.core.NonEmptyList
               import arrow.core.Validated
-              import arrow.core.invalidNel
               import arrow.core.zip
+              
+              import arrow.core.invalidNel
 
               val x: Validated<NonEmptyList<String>, Int> = "failure".invalidNel()
               val y: Validated<NonEmptyList<String>, Int> = "failure".invalidNel()
@@ -146,11 +157,47 @@ class ValidatedToEitherTest implements RewriteTest {
 
               import arrow.core.Either
               import arrow.core.NonEmptyList
+
               import arrow.core.leftNel
 
               val x: Either<NonEmptyList<String>, Int> = "failure".leftNel()
               val y: Either<NonEmptyList<String>, Int> = "failure".leftNel()
               val z: Either<NonEmptyList<String>, Int> = Either.zipOrAccumulate(x, y) { a, b -> a + b }
+              """
+          )
+        );
+    }
+
+    @Test
+    void rewriteZipToZipOrAccumulate3() {
+        rewriteRun(
+          kotlin(
+            """
+              package com.yourorg
+
+              import arrow.core.NonEmptyList
+              import arrow.core.Validated
+              import arrow.core.zip
+              
+              import arrow.core.invalidNel
+
+              val a: Validated<NonEmptyList<String>, Int> = "failure".invalidNel()
+              val b: Validated<NonEmptyList<String>, Int> = "failure".invalidNel()
+              val c: Validated<NonEmptyList<String>, Int> = "failure".invalidNel()
+              val z: Validated<NonEmptyList<String>, Int> = a.zip(b, c) { aa, bb, cc -> aa + bb + cc }
+              """,
+            """
+              package com.yourorg
+
+              import arrow.core.Either
+              import arrow.core.NonEmptyList
+
+              import arrow.core.leftNel
+
+              val a: Either<NonEmptyList<String>, Int> = "failure".leftNel()
+              val b: Either<NonEmptyList<String>, Int> = "failure".leftNel()
+              val c: Either<NonEmptyList<String>, Int> = "failure".leftNel()
+              val z: Either<NonEmptyList<String>, Int> = Either.zipOrAccumulate(a, b, c) { aa, bb, cc -> aa + bb + cc }
               """
           )
         );

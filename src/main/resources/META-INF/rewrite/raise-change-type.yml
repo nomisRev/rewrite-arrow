@@ -6,7 +6,7 @@ recipeList:
     - arrow.ChangeTopLevelFunction:
         methodPattern: arrow.core.continuations.EffectKt effect(..)
         newMethodName: effect
-        newMethodImport: arrow.core.raise.effect
+        newMethodImport: arrow.core.raise.RaiseKt
     - org.openrewrite.java.ChangeMethodName:
         methodPattern: arrow.core.continuations.EffectScope shift(*)
         newMethodName: raise
@@ -20,7 +20,7 @@ recipeList:
     - arrow.ChangeTopLevelFunction:
         methodPattern: arrow.core.continuations.EagerEffectKt eagerEffect(..)
         newMethodName: eagerEffect
-        newMethodImport: arrow.core.raise.eagerEffect
+        newMethodImport: arrow.core.raise.RaiseKt
     - org.openrewrite.java.ChangeMethodName:
           methodPattern: arrow.core.continuations.EagerEffectScope shift(*)
           newMethodName: raise
@@ -34,18 +34,18 @@ recipeList:
     - arrow.RaiseEnsureImport
     - arrow.AddRaiseExtensionImport:
           methodPattern: fold(..)
-          methodImport: arrow.core.raise.fold
+          methodImport: fold
     - arrow.AddRaiseExtensionImport:
         methodPattern: toEither()
-        methodImport: arrow.core.raise.toEither
+        methodImport: toEither
     - arrow.AddRaiseExtensionImport:
         methodPattern: toIor()
-        methodImport: arrow.core.raise.toIor
+        methodImport: toIor
     - arrow.AddRaiseExtensionImport:
           methodPattern: toValidated()
-          methodImport: arrow.core.raise.toValidated
+          methodImport: toValidated
     - arrow.AddRaiseExtensionImport:
         methodPattern: orNull()
         newMethodName: getOrNull
-        methodImport: arrow.core.raise.getOrNull
+        methodImport: getOrNull
     - arrow.RewriteEffectDSL

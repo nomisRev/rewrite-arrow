@@ -6,19 +6,20 @@ recipeList:
     - arrow.ChangeTopLevelFunction:
         methodPattern: arrow.core.ValidatedKt valid()
         newMethodName: right
-        newMethodImport: arrow.core.right
+        newMethodImport: arrow.core.EitherKt
     - arrow.ChangeTopLevelFunction:
           methodPattern: arrow.core.ValidatedKt validNel()
           newMethodName: right
-          newMethodImport: arrow.core.right
+          newMethodImport: arrow.core.EitherKt
     - arrow.ChangeTopLevelFunction:
           methodPattern: arrow.core.ValidatedKt invalid()
           newMethodName: left
-          newMethodImport: arrow.core.left
+          newMethodImport: arrow.core.EitherKt
     - arrow.ChangeTopLevelFunction:
           methodPattern: arrow.core.ValidatedKt invalidNel()
           newMethodName: leftNel
-          newMethodImport: arrow.core.leftNel
+          newMethodImport: arrow.core.EitherKt
     - org.openrewrite.java.ChangeType:
         oldFullyQualifiedTypeName: arrow.core.Validated
         newFullyQualifiedTypeName: arrow.core.Either
+    - arrow.ZipRecipe

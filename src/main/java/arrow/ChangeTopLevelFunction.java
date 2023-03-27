@@ -79,7 +79,7 @@ public class ChangeTopLevelFunction extends Recipe {
                 String importToRemove = m.getMethodType().getDeclaringType().getPackageName() + "." + m.getName().getSimpleName();
                 m = m.withName(m.getName().withSimpleName(newMethodName));
                 if (newMethodName != null) {
-                    maybeAddImport(newMethodImport, null, false);
+                    maybeAddImport(newMethodImport, newMethodName, false);
                 }
                 maybeRemoveImport(importToRemove);
             }

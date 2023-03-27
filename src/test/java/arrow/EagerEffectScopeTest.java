@@ -116,6 +116,7 @@ class EagerEffectScopeTest implements RewriteTest {
               package com.yourorg
                             
               import arrow.core.raise.Raise
+              
               import arrow.core.raise.ensure
 
               suspend fun Raise<Int>.test(): Unit =
@@ -141,6 +142,7 @@ class EagerEffectScopeTest implements RewriteTest {
               package com.yourorg
                             
               import arrow.core.raise.EagerEffect
+              
               import arrow.core.raise.eagerEffect
 
               val x: EagerEffect<String, Int> = eagerEffect { 1 }
@@ -157,6 +159,7 @@ class EagerEffectScopeTest implements RewriteTest {
               package com.yourorg
                             
               import arrow.core.continuations.EagerEffect
+              
               import arrow.core.continuations.eagerEffect
 
               val x: EagerEffect<String, Int> = eagerEffect {
@@ -168,6 +171,7 @@ class EagerEffectScopeTest implements RewriteTest {
               package com.yourorg
                             
               import arrow.core.raise.EagerEffect
+              
               import arrow.core.raise.eagerEffect
               import arrow.core.raise.ensure
 
@@ -275,6 +279,7 @@ class EagerEffectScopeTest implements RewriteTest {
               package com.yourorg
                             
               import arrow.core.Either
+              
               import arrow.core.raise.eagerEffect
               import arrow.core.raise.toEither
                             
@@ -306,6 +311,7 @@ class EagerEffectScopeTest implements RewriteTest {
               package com.yourorg
                             
               import arrow.core.Ior
+              
               import arrow.core.raise.eagerEffect
               import arrow.core.raise.toIor
                             
@@ -337,6 +343,7 @@ class EagerEffectScopeTest implements RewriteTest {
               package com.yourorg
                             
               import arrow.core.Validated
+              
               import arrow.core.raise.eagerEffect
               import arrow.core.raise.toValidated
                             

@@ -64,7 +64,7 @@ public class RaiseEnsureImport extends Recipe {
             J.MethodInvocation m = (J.MethodInvocation) super.visitMethodInvocation(method, executionContext);
             // If we get called on a lambda's body, the method invocation will still be typed to EffectScope & EagerEffectScope.
             if (raiseEnsureMatcher.matches(m) || effectScopeMatcher.matches(m) || eagerEffectScopeMatcher.matches(m)) {
-                maybeAddImport("arrow.core.raise.ensure", false);
+                maybeAddImport("arrow.core.raise.RaiseKt", "ensure", false);
             }
             return m;
         }
