@@ -1,18 +1,10 @@
 # rewrite-arrow
 
-Spike to investigate automating migration from Arrow 1.1.x to Arrow 1.2.x.
-The goal is to automate fixing `@Deprecated` code, such that the resulting (non-deprecated) code is source -and binary compatible with Arrow 2.0.0.
+Automatig migration for Arrow 1.1.x to 1.2.x (and 2.x.x).
 
-# Tasks
+## Status
 
-- [ ] Rewrite imports for `arrow.core.computations.*` to `arrow.core.raise.*`
- - [ ] Add missing `ensure` import based on usage
- 
-- [ ] Rewrite imports for `arrow.core.continuations.*` to `arrow.core.raise.*` 
- - [ ] Add missing `ensure` import based on usage
- - [ ] Add missing `Effect.xxx` or `EagerEffect.xx` import based on usage (`fold`, `toEither`, etc).
- 
- - [ ] Migrate `Validated` to `Either`
- 
- - [ ] Write migration guide using OpenRewrite
- 
+ - [x] EffectScope/EagerEffectScope to Raise
+ - [x] Either DSL (EffectScope/EagerEffectScope) to Raise
+ - [ ] Validated to Either
+ - [ ] Rewriting deprecated methods to new methods
