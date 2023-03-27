@@ -1,34 +1,23 @@
-plugins {
-  alias(libs.plugins.kotlin.multiplatform)
-  alias(libs.plugins.openrewrite)
+@Suppress("DSL_SCOPE_VIOLATION") plugins {
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.openrewrite)
 }
 
 repositories {
-  mavenCentral()
+    mavenCentral()
 }
 
-kotlin {
-  jvm()
-  macosArm64()
-
-    sourceSets {
-        commonMain {
-            dependencies {
-                implementation(kotlin("stdlib"))
-                implementation(libs.arrow.core)
-            }
-        }
-    }
-}
 
 dependencies {
-   rewrite(rootProject)
+    implementation(kotlin("stdlib"))
+    implementation(libs.arrow.core)
+    rewrite(rootProject)
 }
 
-tasks.findByName("rewriteDryRun")!!.dependsOn(rootProject.tasks.findByName("jar"))
-tasks.findByName("rewriteRun")!!.dependsOn(rootProject.tasks.findByName("jar"))
-tasks.findByName("rewriteDiscover")!!.dependsOn(rootProject.tasks.findByName("jar"))
+tasks.findByName("rewriteDryRun")!!.dependsOn(rootProject.tasks.jar)
+tasks.findByName("rewriteRun")!!.dependsOn(rootProject.tasks.jar)
+tasks.findByName("rewriteDiscover")!!.dependsOn(rootProject.tasks.jar)
 
 rewrite {
-  activeRecipe("arrow.RaiseRefactor")
+    activeRecipe("arrow.RaiseRefactor")
 }
