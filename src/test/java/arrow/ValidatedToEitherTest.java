@@ -125,7 +125,6 @@ class ValidatedToEitherTest implements RewriteTest {
     }
 
     @Test
-    @Disabled("Not yet implemented")
     void rewriteZipToZipOrAccumulate() {
         rewriteRun(
           kotlin(
@@ -150,7 +149,7 @@ class ValidatedToEitherTest implements RewriteTest {
 
               val x: Either<NonEmptyList<String>, Int> = "failure".leftNel()
               val y: Either<NonEmptyList<String>, Int> = "failure".leftNel()
-              val z: Either<NonEmptyList<String>, Int> = Either.zipOrAccumulate(x, y) { a, b -> a + b }
+              val z: Either<NonEmptyList<String>, Int> = x.zip(y) { a, b -> a + b }
               """
           )
         );
