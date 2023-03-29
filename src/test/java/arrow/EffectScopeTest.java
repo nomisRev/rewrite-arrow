@@ -116,6 +116,7 @@ class EffectScopeTest implements RewriteTest {
               package com.yourorg
                             
               import arrow.core.raise.Raise
+              
               import arrow.core.raise.ensure
 
               suspend fun Raise<Int>.test(): Unit =
@@ -141,6 +142,7 @@ class EffectScopeTest implements RewriteTest {
               package com.yourorg
                             
               import arrow.core.raise.Effect
+              
               import arrow.core.raise.effect
 
               val x: Effect<String, Int> = effect { 1 }
@@ -168,6 +170,7 @@ class EffectScopeTest implements RewriteTest {
               package com.yourorg
                             
               import arrow.core.raise.Effect
+              
               import arrow.core.raise.effect
               import arrow.core.raise.ensure
 
@@ -275,6 +278,7 @@ class EffectScopeTest implements RewriteTest {
               package com.yourorg
                             
               import arrow.core.Either
+              
               import arrow.core.raise.effect
               import arrow.core.raise.toEither
                             
@@ -306,6 +310,7 @@ class EffectScopeTest implements RewriteTest {
               package com.yourorg
                             
               import arrow.core.Ior
+              
               import arrow.core.raise.effect
               import arrow.core.raise.toIor
                             
@@ -337,6 +342,7 @@ class EffectScopeTest implements RewriteTest {
               package com.yourorg
                             
               import arrow.core.Validated
+              
               import arrow.core.raise.effect
               import arrow.core.raise.toValidated
                             
@@ -404,9 +410,8 @@ class EffectScopeTest implements RewriteTest {
                             
               import arrow.core.Either
               import arrow.core.raise.Effect
-              import arrow.core.raise.effect
-              import arrow.core.raise.either
-              import arrow.core.raise.ensure
+              
+              import arrow.core.raise.*
               
               fun example2(): Either<String, Int> = either {
                 ensure(false) { "failure" }

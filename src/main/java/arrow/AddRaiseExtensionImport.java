@@ -82,7 +82,7 @@ public class AddRaiseExtensionImport extends Recipe {
                 }
 
                 // Add import for raise that previously was a method on Effect/EagerEffect
-                maybeAddImport(methodImport, false);
+                maybeAddImport("arrow.core.raise.RaiseKt", methodImport, false);
             }
             return m;
         }

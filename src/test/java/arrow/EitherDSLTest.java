@@ -43,6 +43,7 @@ class EitherDSLTest implements RewriteTest {
               package com.yourorg
                             
               import arrow.core.Either
+              
               import arrow.core.raise.either
 
               fun test(): Either<String, Int> = either {
@@ -71,6 +72,7 @@ class EitherDSLTest implements RewriteTest {
               package com.yourorg
                             
               import arrow.core.Either
+              
               import arrow.core.raise.either
 
               fun test(): Either<String, Int> = either {
@@ -89,6 +91,7 @@ class EitherDSLTest implements RewriteTest {
               package com.yourorg
                             
               import arrow.core.Either
+              
               import arrow.core.continuations.either
 
               fun test(): Either<String, Int> = either.invoke {
@@ -99,6 +102,7 @@ class EitherDSLTest implements RewriteTest {
               package com.yourorg
                             
               import arrow.core.Either
+              
               import arrow.core.raise.either
 
               fun test(): Either<String, Int> = either {

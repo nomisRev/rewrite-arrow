@@ -99,7 +99,7 @@ public class RewriteEffectDSL extends Recipe {
                 }
 
                 // Add the import to the top-level DSL function.
-                maybeAddImport("arrow.core.raise." + dslName, null, false);
+                maybeAddImport("arrow.core.raise.RaiseKt", dslName, false);
 
                 // Remove the import to the object & the eager method.
                 maybeRemoveImport(fullyQualifiedObject);
