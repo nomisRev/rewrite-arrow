@@ -2,10 +2,10 @@
 org-junit-jupiter = "5.9.2"
 lombok = "1.18.26"
 logback = "1.4.6"
-arrow = "1.1.6-alpha.72"
+arrow = "1.1.6-alpha.74"
 rewrite = "1.17.0"
 rewrite-kotlin = "0.2.6"
-openrewrite = "5.38.1"
+openrewrite = "5.38.2"
 assertj = "3.24.2"
 kotlin = "1.8.10"
 
